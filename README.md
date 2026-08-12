@@ -36,6 +36,8 @@ git clone --depth 1 https://github.com/mithril-studio/agent-skills /tmp/agent-sk
 | Skill | What it does |
 |---|---|
 | [`memory`](./memory) | Read accumulated project learnings at session start; append new ones before finishing. Append-only JSONL stored in the repo, so learnings ship inside the pull request and compound across sessions. |
+| [`checkpoint-commits`](./checkpoint-commits) | Commit and push every working increment as you go, so a crash, timeout, or killed VM never loses finished work. |
+| [`bounded-waits`](./bounded-waits) | Cap how long you babysit a backgrounded slow command — never let watching it finish outrank committing and opening the PR. |
 
 ## What belongs here
 
