@@ -53,6 +53,7 @@ How I want an agent to write, review, and change code.
 | [`code-simplification`](./engineering-skills/code-simplification) | Cut accumulated complexity out of working code without changing its behavior. |
 | [`codebase-design`](./engineering-skills/codebase-design) | Shared vocabulary for deep modules: where a seam goes, how to deepen an interface, how to make code testable and navigable. |
 | [`context-engineering`](./engineering-skills/context-engineering) | Set up an agent's context and rules files for a project, and fix it when output quality starts degrading. |
+| [`debugging-and-error-recovery`](./engineering-skills/debugging-and-error-recovery) | Find the root cause of a failure systematically instead of guessing at it. |
 | [`domain-modeling`](./engineering-skills/domain-modeling) | Build and sharpen a project's domain model — terminology, `CONTEXT.md`, and ADRs. |
 | [`doubt-driven-development`](./engineering-skills/doubt-driven-development) | Put every non-trivial decision through a fresh-context adversarial review before it stands. For when verifying now is cheaper than debugging later. |
 | [`frontend-ui-engineering`](./engineering-skills/frontend-ui-engineering) | Build accessible, responsive UI that reads as production-quality rather than AI-generated. |
@@ -60,7 +61,10 @@ How I want an agent to write, review, and change code.
 | [`improve-codebase-architecture`](./engineering-skills/improve-codebase-architecture) | Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick. |
 | [`incremental-implementation`](./engineering-skills/incremental-implementation) | Land multi-file changes in verifiable steps instead of one large drop. |
 | [`lean-build`](./engineering-skills/lean-build) | Build feature work with high overbuilding risk: reuse what the repo has, hold scope, define the stop condition up front. |
+| [`performance-optimization`](./engineering-skills/performance-optimization) | Profile and fix performance across frontend, backend, queries and databases — measure before changing. |
 | [`safe-refactor`](./engineering-skills/safe-refactor) | Restructure code while preserving behavior, with verification bracketing every structural edit. |
+| [`security-and-hardening`](./engineering-skills/security-and-hardening) | Harden code that touches untrusted input, auth, storage, or third-party services. |
+| [`test-driven-development`](./engineering-skills/test-driven-development) | Prove behavior with a failing test first — for new logic, and for every bug before its fix. |
 
 ### [`memory-skills`](./memory-skills)
 
@@ -80,21 +84,46 @@ never installed as one.
 | [`accessibility-checklist.md`](./references/accessibility-checklist.md) | `frontend-ui-engineering` |
 | [`definition-of-done.md`](./references/definition-of-done.md) | `incremental-implementation` |
 | [`orchestration-patterns.md`](./references/orchestration-patterns.md) | `doubt-driven-development` |
-| [`performance-checklist.md`](./references/performance-checklist.md) | `code-review-and-quality` |
-| [`security-checklist.md`](./references/security-checklist.md) | `code-review-and-quality` |
+| [`performance-checklist.md`](./references/performance-checklist.md) | `code-review-and-quality`, `performance-optimization` |
+| [`security-checklist.md`](./references/security-checklist.md) | `code-review-and-quality`, `security-and-hardening` |
+| [`testing-patterns.md`](./references/testing-patterns.md) | `test-driven-development` |
+
+Every link sits under a `## See Also` heading, which is the point: a skill's `SKILL.md`
+is loaded in full whenever that skill fires, so the 205-line security checklist stays out
+of it and is read only when a review actually goes deep on security.
 
 ## Provenance
 
 Most of `engineering-skills` is vendored from two MIT-licensed upstreams, not written here.
-Recorded so the next person knows what to diff against when upstream moves.
 
 | Skill | Upstream |
 |---|---|
-| `code-review-and-quality`, `code-simplification`, `context-engineering`, `doubt-driven-development`, `frontend-ui-engineering`, `git-workflow-and-versioning`, `incremental-implementation` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
+| `code-review-and-quality`, `code-simplification`, `context-engineering`, `debugging-and-error-recovery`, `doubt-driven-development`, `frontend-ui-engineering`, `git-workflow-and-versioning`, `incremental-implementation`, `performance-optimization`, `security-and-hardening`, `test-driven-development` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
 | `codebase-design`, `domain-modeling`, `improve-codebase-architecture` | [mattpocock/skills](https://github.com/mattpocock/skills) — MIT, © Matt Pocock |
 | `caveman-explore`, `lean-build`, `safe-refactor`, `memory` | Mine — no upstream |
 
-`references/` is from addyosmani/agent-skills too, same license.
+All of `references/` is from addyosmani/agent-skills too, same license.
+
+### Staying honest about the fork
+
+A vendored copy is a fork, and a fork nobody checks goes stale invisibly.
+[`upstream.tsv`](./upstream.tsv) records where every vendored path came from, and
+`upstream-diff.sh` compares them against the live upstreams:
+
+```bash
+./upstream-diff.sh                      # summary: same / DRIFT / GONE
+./upstream-diff.sh --diff               # what actually changed
+./upstream-diff.sh security-and-hardening   # one entry
+./upstream-diff.sh --refresh            # re-fetch upstream first
+./upstream-diff.sh --check              # exit 1 on any drift, for CI
+```
+
+Drift is not a failure. Editing a vendored skill on purpose is fine — the script exists so
+that choice stays visible instead of turning into a surprise later. Upstreams are cached in
+`.upstream-cache/` (gitignored); `--refresh` updates them.
+
+When you take ownership of a vendored skill for good, delete its row from `upstream.tsv`
+and move it to the "Mine" line above.
 
 ## What belongs here
 
