@@ -22,6 +22,10 @@ cd agent-skills
 ./install.sh --list               # show what is available
 ```
 
+`references/` installs alongside, one level above the skills directory
+(`~/.claude/references/`), because that is where the skills' `../../references/…` links
+resolve to once a skill sits in `~/.claude/skills/<name>/`.
+
 Onto a remote machine — a boxd VM, a server, a container:
 
 ```bash
@@ -56,16 +60,50 @@ How I want an agent to write, review, and change code.
 | [`improve-codebase-architecture`](./engineering-skills/improve-codebase-architecture) | Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick. |
 | [`incremental-implementation`](./engineering-skills/incremental-implementation) | Land multi-file changes in verifiable steps instead of one large drop. |
 | [`lean-build`](./engineering-skills/lean-build) | Build feature work with high overbuilding risk: reuse what the repo has, hold scope, define the stop condition up front. |
-| [`memory`](./engineering-skills/memory) | Read accumulated project learnings at session start; append new ones before finishing. Append-only JSONL stored in the repo, so learnings ship inside the pull request and compound across sessions. |
 | [`safe-refactor`](./engineering-skills/safe-refactor) | Restructure code while preserving behavior, with verification bracketing every structural edit. |
+
+### [`memory-skills`](./memory-skills)
+
+What an agent should carry across sessions.
+
+| Skill | What it does |
+|---|---|
+| [`memory`](./memory-skills/memory) | Read accumulated project learnings at session start; append new ones before finishing. Append-only JSONL stored in the repo, so learnings ship inside the pull request and compound across sessions. |
+
+### [`references`](./references)
+
+Shared checklists several skills link to rather than restate. Not skills — no `SKILL.md`,
+never installed as one.
+
+| File | Linked from |
+|---|---|
+| [`accessibility-checklist.md`](./references/accessibility-checklist.md) | `frontend-ui-engineering` |
+| [`definition-of-done.md`](./references/definition-of-done.md) | `incremental-implementation` |
+| [`orchestration-patterns.md`](./references/orchestration-patterns.md) | `doubt-driven-development` |
+| [`performance-checklist.md`](./references/performance-checklist.md) | `code-review-and-quality` |
+| [`security-checklist.md`](./references/security-checklist.md) | `code-review-and-quality` |
+
+## Provenance
+
+Most of `engineering-skills` is vendored from two MIT-licensed upstreams, not written here.
+Recorded so the next person knows what to diff against when upstream moves.
+
+| Skill | Upstream |
+|---|---|
+| `code-review-and-quality`, `code-simplification`, `context-engineering`, `doubt-driven-development`, `frontend-ui-engineering`, `git-workflow-and-versioning`, `incremental-implementation` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
+| `codebase-design`, `domain-modeling`, `improve-codebase-architecture` | [mattpocock/skills](https://github.com/mattpocock/skills) — MIT, © Matt Pocock |
+| `caveman-explore`, `lean-build`, `safe-refactor`, `memory` | Mine — no upstream |
+
+`references/` is from addyosmani/agent-skills too, same license.
 
 ## What belongs here
 
-**Mine.** Skills I wrote, that encode how I want an agent to work.
+**Mine, or vendored deliberately.** Skills that encode how I want an agent to work. Where a
+skill is someone else's, the Provenance table says whose — a vendored copy is a fork, and a
+fork nobody records is a fork that silently goes stale.
 
-**Not third-party skills.** The boxd, n8n, langfuse and sentry skills come from their
-vendors and are installed from their own sources — copying them here means maintaining a
-fork that silently goes stale. Reference them, don't vendor them.
+**Not vendor tooling skills.** The boxd, n8n, langfuse and sentry skills ship from their own
+sources and update with the tool they describe. Reference them, don't copy them.
 
 **Not personal workflow.** Chief-of-staff commands, inbox triage, anything touching private
 context stays out of a public repo.

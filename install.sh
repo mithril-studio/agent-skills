@@ -98,4 +98,14 @@ for i in "${selected[@]}"; do
   echo "installed $name -> $DEST/$name"
 done
 
+# Some skills link to ../../references/*.md. From an installed skill at
+# $DEST/<name>/ that resolves to $DEST/../references, so the shared folder has to
+# land one level above the skills directory to keep those links working.
+if [ -d "$SOURCE/references" ]; then
+  REF_DEST="$(dirname "$DEST")/references"
+  mkdir -p "$REF_DEST"
+  cp -R "$SOURCE/references/." "$REF_DEST/"
+  echo "installed references -> $REF_DEST"
+fi
+
 echo "done: ${#selected[@]} skill(s) in $DEST"
