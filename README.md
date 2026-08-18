@@ -48,7 +48,9 @@ How I want an agent to write, review, and change code.
 
 | Skill | What it does |
 |---|---|
+| [`bounded-waits`](./engineering-skills/bounded-waits) | Cap how long you babysit a backgrounded slow command — never let watching it finish outrank committing and opening the PR. |
 | [`caveman-explore`](./engineering-skills/caveman-explore) | Read-only repository explorer for cold starts and broad localization. Returns compact `path:line` citations; its reads and greps stay out of the main conversation. |
+| [`checkpoint-commits`](./engineering-skills/checkpoint-commits) | Commit and push every working increment as you go, so a crash, timeout, or killed VM never loses finished work. |
 | [`code-review-and-quality`](./engineering-skills/code-review-and-quality) | Multi-axis review of a change before it merges — whether a human, you, or another agent wrote it. |
 | [`code-simplification`](./engineering-skills/code-simplification) | Cut accumulated complexity out of working code without changing its behavior. |
 | [`codebase-design`](./engineering-skills/codebase-design) | Shared vocabulary for deep modules: where a seam goes, how to deepen an interface, how to make code testable and navigable. |
@@ -100,7 +102,7 @@ Most of `engineering-skills` is vendored from two MIT-licensed upstreams, not wr
 |---|---|
 | `code-review-and-quality`, `code-simplification`, `context-engineering`, `debugging-and-error-recovery`, `doubt-driven-development`, `frontend-ui-engineering`, `git-workflow-and-versioning`, `incremental-implementation`, `performance-optimization`, `security-and-hardening`, `test-driven-development` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
 | `codebase-design`, `domain-modeling`, `improve-codebase-architecture` | [mattpocock/skills](https://github.com/mattpocock/skills) — MIT, © Matt Pocock |
-| `caveman-explore`, `lean-build`, `safe-refactor`, `memory` | Mine — no upstream |
+| `bounded-waits`, `caveman-explore`, `checkpoint-commits`, `lean-build`, `safe-refactor`, `memory` | Mine — no upstream |
 
 All of `references/` is from addyosmani/agent-skills too, same license.
 
