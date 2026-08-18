@@ -76,6 +76,17 @@ What an agent should carry across sessions.
 |---|---|
 | [`memory`](./memory-skills/memory) | Read accumulated project learnings at session start; append new ones before finishing. Append-only JSONL stored in the repo, so learnings ship inside the pull request and compound across sessions. |
 
+### [`factory-skills`](./factory-skills)
+
+How work gets planned before an agent touches it.
+
+| Skill | What it does |
+|---|---|
+| [`factory-compose`](./factory-skills/factory-compose) | Turn a project brief into an ordered backlog of GitHub issues the Software Factory builds lowest-number-first. The issue body is the building agent's whole prompt and the reviewing agent's contract, so it carries a grounded file map, boundaries, and acceptance criteria that are executed rather than judged. Drafts for human review; creates only on approval. |
+
+Unlike the other categories, this one runs *outside* the VM — on a laptop or a planner box,
+against GitHub — rather than inside a build run.
+
 ### [`references`](./references)
 
 Shared checklists several skills link to rather than restate. Not skills — no `SKILL.md`,
