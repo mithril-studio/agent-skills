@@ -9,8 +9,9 @@ Agents start every session from zero. The pattern discovered yesterday is gone t
 skill fixes that: learnings are stored as append-only JSONL inside the repo, travel with the
 pull request, and are read back at the start of the next session.
 
-**The file is the database.** There is no server, no daemon, no index to rebuild. Everything
-here is plain file I/O with the tools you already have.
+**The file is the database.** There is no server and no daemon — everything here is plain file
+I/O with the tools you already have. There *is* an index, but it is a checked-in file you append
+to like any other, not something to rebuild.
 
 ## §1 When to use this
 
@@ -24,16 +25,49 @@ nothing. Empty is a valid outcome; noise is not.
 
 ```
 .mem/
+  index.jsonl             # one short line per ACTIVE record — the scan surface (§2.1)
   domains/
-    <domain>.jsonl        # one append-only log per domain, e.g. database.jsonl
+    <domain>.jsonl        # the full active records, one per line, e.g. database.jsonl
     _universal.jsonl      # records with no domain anchor — always primed
+  archive/
+    <domain>.jsonl        # records that have been retired (§6). Never primed.
 ```
+
+Three places, and each holds a record in exactly one state:
+
+- a record you can act on is a line in `index.jsonl` **and** a line in `domains/<domain>.jsonl`
+  with `status: active`;
+- a record that has been retired is a line in `archive/<domain>.jsonl` and appears in neither
+  of the other two.
+
+There is no fourth combination. An id in the index with no active record behind it, or an
+`active` record sitting in `archive/`, is a broken store — and in a repo that validates its
+memory (§7) it is a failed build, not a cosmetic problem.
 
 Domains are free-form lowercase slugs naming an area of the codebase: `database`, `auth`,
 `ci`, `frontend`. Use an existing domain if one fits — check `ls .mem/domains/` first.
 Create a new file only when nothing fits.
 
 If `.mem/` does not exist and you have something worth recording, create it.
+
+### §2.1 The index line
+
+The index exists so priming is cheap: you read one small file to decide what is worth opening,
+instead of every full record in every domain. That only works if the lines stay short.
+
+```json
+{"id":"mem_7a3f","domain":"database","type":"convention","title":"Use WAL mode for SQLite","files":["src/db/*.ts"]}
+```
+
+| Field | Rule |
+|---|---|
+| `id`, `domain`, `type` | Copied from the record. All three required. |
+| `title` | **The record's title, character for character.** Do not shorten it to fit. |
+| `files` | A list — the record's `evidence.files`. `[]` if the learning is not code-local. |
+
+Keep the line under ~350 bytes. If it does not fit, the *title* is too long — fix it in the
+record and copy the shorter one, so the two still match. A title that has been trimmed on its
+way into the index is the most common way this store breaks, and it is caught, not tolerated.
 
 ## §3 The record
 
@@ -75,13 +109,16 @@ place.
 
 Do this at session start, before planning.
 
-1. `ls .mem/domains/` — if there is no `.mem/`, skip; there is nothing to prime.
-2. Always read `_universal.jsonl`.
-3. Read the domain files matching your working set. Match by the paths named in your task
-   and by `git status`, against each record's `evidence.files` / `evidence.dirs`.
-4. When the task is small and the repo is small, just read everything.
-5. Skip records with `status` of `deprecated` or `superseded`. Treat `confidence: low` as a
-   hint, not a rule.
+1. `ls .mem/` — if there is no `.mem/`, skip; there is nothing to prime.
+2. Read `index.jsonl` first, whole. It is small by construction, and it is how you find out
+   what exists without opening anything.
+3. Always read `domains/_universal.jsonl`.
+4. Read the domain files matching your working set. Match by the paths named in your task
+   and by `git status`, against the index's `files` and each record's `evidence.files` /
+   `evidence.dirs`.
+5. When the task is small and the repo is small, just read everything under `domains/`.
+6. Never prime from `archive/`. Those records were retired on purpose; reading them is how a
+   belief the project abandoned comes back.
 
 Then say in one line what you loaded — e.g. `memory: primed 6 records from database, ci` —
 so the human can see what shaped your reasoning.
@@ -92,15 +129,19 @@ worth recording as a supersession (§6).
 
 ## §5 Recording — write before you finish
 
-Append one line per learning. Never rewrite an existing line.
+One learning is **two** appends: the full record, and its index line. A record with no index
+line is invisible to the next session; an index line with no record is a broken store.
 
 ```bash
-mkdir -p .mem/domains
-printf '%s\n' '{"id":"mem_7a3f",...}' >> .mem/domains/database.jsonl
+mkdir -p .mem/domains .mem/archive
+printf '%s\n' '{"id":"mem_7a3f","domain":"database",...,"status":"active",...}' >> .mem/domains/database.jsonl
+printf '%s\n' '{"id":"mem_7a3f","domain":"database","type":"convention","title":"...","files":["src/db/*.ts"]}' >> .mem/index.jsonl
 ```
 
-Append-only matters: two agents recording concurrently append different lines, so git merges
-them cleanly. Rewriting a line creates a conflict.
+Append, never rewrite an existing line. That matters for merges: two agents recording
+concurrently append different lines, so git resolves them cleanly, where rewriting a line
+creates a conflict. Supersession (§6) is the one operation that moves a line, which is why it
+has its own section and its own rules.
 
 **Record when:**
 - You hit an error that cost real time, and you found the fix (`failure` + `resolution`)
@@ -114,20 +155,47 @@ them cleanly. Rewriting a line creates a conflict.
 - Transcripts, narration, or "I did X then Y" — records are distilled knowledge, not logs
 - Secrets, tokens, credentials, or customer data
 
-Then commit `.mem/` along with your code changes so the learning ships in the pull request
-and gets reviewed like any other diff.
+Then check the store and commit it (§7).
 
 ## §6 When a learning turns out to be wrong
 
-Nothing is deleted or edited. Append a new record that replaces the old one:
+Nothing is deleted. The old record is **retired**, not erased, and the new one takes its place.
+Three moves, and all three are needed — doing two of them leaves the store broken:
 
-- Set `supersedes` to the old record's `id`
-- Append a second line that repeats the old record with `status` changed to `superseded`
+1. **Append the new record** to `domains/<domain>.jsonl` with `status: active` and `supersedes`
+   set to the old record's `id`.
+2. **Move the old record's line** out of `domains/<domain>.jsonl` and into
+   `archive/<domain>.jsonl`, with `status` changed to `superseded`.
+3. **Update `index.jsonl`**: append the new id's line, remove the old id's line.
 
-The history is the value — it shows what the project believed and when it stopped believing
-it. Git keeps the trail.
+The direction is the part that is easy to get backwards, so state it plainly: **`archive/` is
+for the record you just stopped believing, never for the one that just became current.** A
+supersession that files the *new* record in `archive/` leaves the index pointing at nothing,
+which is precisely what a validator reports as `index entry 'mem_xxxx' has no matching active
+record in domains/`.
 
-## §7 Boundaries
+The history is the value — it shows what the project believed and when it stopped believing it.
+`archive/` and git together keep the trail.
+
+## §7 Check your work
+
+You have just hand-edited two or three files to keep four facts in agreement. Do not assume you
+got it right — the mistakes here are silent, and the next session pays for them.
+
+If the repo has a memory validator, run it before you finish. In this factory's own repo that
+is one of the gates CI merges on:
+
+```bash
+python -m control.memory validate .
+```
+
+Elsewhere, check by hand: every id in `index.jsonl` has an `active` record in `domains/`, every
+index title matches its record's title exactly, and nothing `active` is sitting in `archive/`.
+
+Then commit `.mem/` along with your code changes, so the learning ships in the pull request and
+gets reviewed like any other diff.
+
+## §8 Boundaries
 
 Memory holds **learnings**. It is not an issue tracker, not a prompt library, not a chat
 log. If it is a task, it belongs in GitHub. If it is a transcript, it belongs in telemetry.
