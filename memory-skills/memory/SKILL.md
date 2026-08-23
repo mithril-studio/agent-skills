@@ -139,9 +139,19 @@ printf '%s\n' '{"id":"mem_7a3f","domain":"database","type":"convention","title":
 ```
 
 Append, never rewrite an existing line. That matters for merges: two agents recording
-concurrently append different lines, so git resolves them cleanly, where rewriting a line
-creates a conflict. Supersession (§6) is the one operation that moves a line, which is why it
-has its own section and its own rules.
+concurrently append different lines, and git resolves that with the `merge=union` driver a
+memory-carrying repo declares in `.gitattributes`, where rewriting a line conflicts outright.
+Supersession (§6) is the one operation that moves a line, which is why it has its own section
+and its own rules.
+
+Be precise about what that driver buys, because a claim that it "just merges" cost a queue of
+four issues a full stop. Two appends at the end of one file *do* conflict in plain git — the
+union driver is what resolves them, and it only applies where the working tree and
+`.gitattributes` are both present. That is every laptop and every CI runner, and it is **not**
+GitHub's merge API, which does a three-way content merge with no working tree and reads no
+attributes at all. So a pull request can merge cleanly under `git merge` and be refused by
+GitHub as conflicted. Nothing you can do while writing prevents that; it is repaired at merge
+time by whatever merges the branch.
 
 **Record when:**
 - You hit an error that cost real time, and you found the fix (`failure` + `resolution`)
