@@ -53,6 +53,14 @@ How I want an agent to write, review, and change code.
 | [`incremental-implementation`](./engineering-skills/incremental-implementation) | Land multi-file changes in verifiable steps instead of one large drop. |
 | [`performance-optimization`](./engineering-skills/performance-optimization) | Profile and fix performance across frontend, backend, queries and databases — measure before changing. |
 
+### [`deploy-skills`](./deploy-skills)
+
+How an agent gets what is on GitHub onto the machine that runs it.
+
+| Skill | What it does |
+|---|---|
+| [`ship-to-boxd`](./deploy-skills/ship-to-boxd) | Update the boxd VM that runs a repo's app: pull `origin/<branch>` into the checkout on the VM, rebuild, restart, verify health, report before/after commits. Defers to a repo's own deploy script when one exists. |
+
 ### [`references`](./references)
 
 Shared checklists several skills link to rather than restate. Not skills — no `SKILL.md`,
@@ -71,10 +79,12 @@ of it and is read only when a review actually goes deep on security.
 ## Provenance
 
 Everything in `engineering-skills` is vendored from an MIT-licensed upstream, not written here.
+`deploy-skills` is mine.
 
 | Skill | Upstream |
 |---|---|
 | `code-review-and-quality`, `git-workflow-and-versioning`, `incremental-implementation`, `performance-optimization` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
+| `ship-to-boxd` | Mine — no upstream |
 
 All of `references/` is from addyosmani/agent-skills too, same license.
 
