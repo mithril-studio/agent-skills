@@ -53,6 +53,7 @@ How I want an agent to write, review, change, and ship code.
 | [`incremental-implementation`](./engineering-skills/incremental-implementation) | Land multi-file changes in verifiable steps instead of one large drop. |
 | [`performance-optimization`](./engineering-skills/performance-optimization) | Profile and fix performance across frontend, backend, queries and databases — measure before changing. |
 | [`ship-to-boxd`](./engineering-skills/ship-to-boxd) | Update the boxd VM that runs a repo's app: pull `origin/<branch>` into the checkout on the VM, rebuild, restart, verify health, report before/after commits. Defers to a repo's own deploy script when one exists. |
+| [`ship-ios`](./engineering-skills/ship-ios) | Release an iOS or macOS app in two gates: build a downloadable test version from `origin/test`, wait for the user to accept it, then PR `test` into `main` and watch the production pipeline. |
 
 ### [`references`](./references)
 
@@ -71,13 +72,13 @@ of it and is read only when a review actually goes deep on security.
 
 ## Provenance
 
-Everything in `engineering-skills` except `ship-to-boxd` is vendored from an MIT-licensed
+Everything in `engineering-skills` except `ship-to-boxd` and `ship-ios` is vendored from an MIT-licensed
 upstream, not written here.
 
 | Skill | Upstream |
 |---|---|
 | `code-review-and-quality`, `git-workflow-and-versioning`, `incremental-implementation`, `performance-optimization` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
-| `ship-to-boxd` | Mine — no upstream |
+| `ship-to-boxd`, `ship-ios` | Mine — no upstream |
 
 All of `references/` is from addyosmani/agent-skills too, same license.
 
