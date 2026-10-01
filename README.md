@@ -74,6 +74,14 @@ How I want an agent to write, review, change, and ship code.
 | [`ship-to-boxd`](./engineering-skills/ship-to-boxd) | Update the boxd VM that runs a repo's app: pull `origin/<branch>` into the checkout on the VM, rebuild, restart, verify health, report before/after commits. Defers to a repo's own deploy script when one exists. |
 | [`ship-ios`](./engineering-skills/ship-ios) | Release an iOS or macOS app in two gates: build a downloadable test version from `origin/test`, wait for the user to accept it, then PR `test` into `main` and watch the production pipeline. |
 
+### [`design-skills`](./design-skills)
+
+How I want an app to look.
+
+| Skill | What it does |
+|---|---|
+| [`web-app-design`](./design-skills/web-app-design) | The house style for every web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app: tokens, type, the sidebar + top bar + page-header shell, where every divider line sits, where back links and actions go, and the component presets. Ships a copy-paste `tokens.css`. |
+
 ### [`references`](./references)
 
 Shared checklists several skills link to rather than restate. Not skills — no `SKILL.md`,
@@ -97,7 +105,7 @@ upstream, not written here.
 | Skill | Upstream |
 |---|---|
 | `code-review-and-quality`, `git-workflow-and-versioning`, `incremental-implementation`, `performance-optimization` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
-| `ship-to-boxd`, `ship-ios` | Mine — no upstream |
+| `ship-to-boxd`, `ship-ios`, `web-app-design` | Mine — no upstream |
 
 All of `references/` is from addyosmani/agent-skills too, same license.
 
