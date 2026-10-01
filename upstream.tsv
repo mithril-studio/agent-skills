@@ -6,24 +6,10 @@
 # something; delete the row when you take ownership of it and stop tracking.
 
 engineering-skills/code-review-and-quality	https://github.com/addyosmani/agent-skills	skills/code-review-and-quality
-engineering-skills/code-simplification	https://github.com/addyosmani/agent-skills	skills/code-simplification
-engineering-skills/context-engineering	https://github.com/addyosmani/agent-skills	skills/context-engineering
-engineering-skills/debugging-and-error-recovery	https://github.com/addyosmani/agent-skills	skills/debugging-and-error-recovery
-engineering-skills/doubt-driven-development	https://github.com/addyosmani/agent-skills	skills/doubt-driven-development
-engineering-skills/frontend-ui-engineering	https://github.com/addyosmani/agent-skills	skills/frontend-ui-engineering
 engineering-skills/git-workflow-and-versioning	https://github.com/addyosmani/agent-skills	skills/git-workflow-and-versioning
 engineering-skills/incremental-implementation	https://github.com/addyosmani/agent-skills	skills/incremental-implementation
 engineering-skills/performance-optimization	https://github.com/addyosmani/agent-skills	skills/performance-optimization
-engineering-skills/security-and-hardening	https://github.com/addyosmani/agent-skills	skills/security-and-hardening
-engineering-skills/test-driven-development	https://github.com/addyosmani/agent-skills	skills/test-driven-development
 
-engineering-skills/codebase-design	https://github.com/mattpocock/skills	skills/engineering/codebase-design
-engineering-skills/domain-modeling	https://github.com/mattpocock/skills	skills/engineering/domain-modeling
-engineering-skills/improve-codebase-architecture	https://github.com/mattpocock/skills	skills/engineering/improve-codebase-architecture
-
-references/accessibility-checklist.md	https://github.com/addyosmani/agent-skills	references/accessibility-checklist.md
 references/definition-of-done.md	https://github.com/addyosmani/agent-skills	references/definition-of-done.md
-references/orchestration-patterns.md	https://github.com/addyosmani/agent-skills	references/orchestration-patterns.md
 references/performance-checklist.md	https://github.com/addyosmani/agent-skills	references/performance-checklist.md
 references/security-checklist.md	https://github.com/addyosmani/agent-skills	references/security-checklist.md
-references/testing-patterns.md	https://github.com/addyosmani/agent-skills	references/testing-patterns.md
