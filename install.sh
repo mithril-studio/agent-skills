@@ -2,13 +2,13 @@
 # Install skills into an agent's skills directory.
 #
 #   ./install.sh                       every skill -> ~/.claude/skills
-#   ./install.sh checkpoint-commits    just one
+#   ./install.sh code-review-and-quality  just one
 #   ./install.sh engineering-skills    a whole category
 #   ./install.sh --dest /path          somewhere else
 #   ./install.sh --list                show what is available
 #
-# Skills live in category folders (engineering-skills/checkpoint-commits/SKILL.md) but
-# install flat, because that is the layout agents read: ~/.claude/skills/checkpoint-commits.
+# Skills live in category folders (engineering-skills/code-review-and-quality/SKILL.md) but
+# install flat, because that is the layout agents read: ~/.claude/skills/code-review-and-quality.
 #
 # Idempotent: re-running overwrites, so it doubles as an update.
 
