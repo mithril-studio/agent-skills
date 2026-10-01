@@ -44,7 +44,7 @@ git clone --depth 1 https://github.com/mithril-studio/agent-skills /tmp/agent-sk
 
 ### [`engineering-skills`](./engineering-skills)
 
-How I want an agent to write, review, and change code.
+How I want an agent to write, review, change, and ship code.
 
 | Skill | What it does |
 |---|---|
@@ -52,14 +52,7 @@ How I want an agent to write, review, and change code.
 | [`git-workflow-and-versioning`](./engineering-skills/git-workflow-and-versioning) | Commits, branches, conflicts, parallel worktrees, semantic version bumps, tags, changelogs. |
 | [`incremental-implementation`](./engineering-skills/incremental-implementation) | Land multi-file changes in verifiable steps instead of one large drop. |
 | [`performance-optimization`](./engineering-skills/performance-optimization) | Profile and fix performance across frontend, backend, queries and databases — measure before changing. |
-
-### [`deploy-skills`](./deploy-skills)
-
-How an agent gets what is on GitHub onto the machine that runs it.
-
-| Skill | What it does |
-|---|---|
-| [`ship-to-boxd`](./deploy-skills/ship-to-boxd) | Update the boxd VM that runs a repo's app: pull `origin/<branch>` into the checkout on the VM, rebuild, restart, verify health, report before/after commits. Defers to a repo's own deploy script when one exists. |
+| [`ship-to-boxd`](./engineering-skills/ship-to-boxd) | Update the boxd VM that runs a repo's app: pull `origin/<branch>` into the checkout on the VM, rebuild, restart, verify health, report before/after commits. Defers to a repo's own deploy script when one exists. |
 
 ### [`references`](./references)
 
@@ -78,8 +71,8 @@ of it and is read only when a review actually goes deep on security.
 
 ## Provenance
 
-Everything in `engineering-skills` is vendored from an MIT-licensed upstream, not written here.
-`deploy-skills` is mine.
+Everything in `engineering-skills` except `ship-to-boxd` is vendored from an MIT-licensed
+upstream, not written here.
 
 | Skill | Upstream |
 |---|---|
