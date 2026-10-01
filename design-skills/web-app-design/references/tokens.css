@@ -1,0 +1,257 @@
+/*
+ * House-style design tokens — the "Legal Control" look shared by every
+ * Mithril Studio web app (extracted from foundation-e-learning and
+ * legal-ai-app, September 2026). Drop this into src/app/globals.css of a
+ * Tailwind v4 + shadcn/ui app, after `@import "tailwindcss";`.
+ *
+ * Every value is OKLCH and has been checked for WCAG 2.1 AA: body text 4.5:1
+ * on every surface it is used on, focus ring and UI chrome 3:1. Do not
+ * "tune" a value by eye — change it only together with a contrast test
+ * (see foundation-e-learning/tests/unit/design-tokens-contrast.test.ts).
+ *
+ * Fonts: bind Archivo, Space Grotesk and IBM Plex Mono with next/font/google
+ * in the root layout, using the variable names referenced below.
+ */
+
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  /* Headings: Space Grotesk — every h1-h6 and the font-heading utility. */
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* THE ONE ACCENT: primary buttons, the active-nav marker, selected states.
+     Identical to --primary so there is only ever one chromatic accent. */
+  --color-accent-brand: var(--accent-brand);
+  --color-accent-brand-foreground: var(--accent-brand-foreground);
+  /* The accent as text/ink on its own 6-10% tint (active tab, numbered
+     step, hub-card icon tile) — a deepened accent, not a second hue. */
+  --color-accent-brand-ink: var(--accent-brand-ink);
+
+  /* Completed / passed: --success for fills, meters and dots,
+     --success-foreground for text on white or on a success tint. */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  /* The one deliberate dark surface (a "continue" banner) and the
+     indicator colour that clears 3:1 on it. */
+  --color-surface-inverse: var(--surface-inverse);
+  --color-surface-inverse-foreground: var(--surface-inverse-foreground);
+  --color-surface-inverse-accent: var(--surface-inverse-accent);
+
+  /* Sidebar chrome: its own tokens so the rail can differ from page
+     surfaces (and be re-branded per tenant) without touching --accent-brand. */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-active-foreground: var(--sidebar-active-foreground);
+  --color-sidebar-marker: var(--sidebar-marker);
+
+  /* The page <h1> colour — its own token so a brand override reaches
+     exactly the title and nothing else. */
+  --color-heading: var(--heading);
+
+  /* Charts, in the order to assign series. */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* shadcn's default ratios on a 12px base: buttons and inputs on
+     --radius-lg, cards on --radius-xl, pills rounded-full. */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* Type: Archivo for UI and prose, Space Grotesk for headings, IBM Plex
+     Mono for figures and code. */
+  --font-sans:
+    var(--font-archivo), system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-heading:
+    var(--font-space-grotesk), system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-mono:
+    var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+
+  --spacing: 0.25rem;
+
+  /* Light theme: navy primary (#1F3864) + blue accent (#5B7FB4) on slate
+     ink, blue-tinted neutrals and a sage green secondary accent. */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.372 0.039 257.3); /* ink #334155 */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.372 0.039 257.3);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.372 0.039 257.3);
+  --primary: oklch(0.345 0.083 260.9); /* navy #1F3864 */
+  --primary-foreground: oklch(0.985 0 0);
+  --heading: oklch(0.372 0.039 257.3);
+  --secondary: oklch(0.951 0.012 259.8); /* tint #EAEFF7 */
+  --secondary-foreground: oklch(0.345 0.083 260.9);
+  --muted: oklch(0.975 0.006 255.5); /* tint-2 #F4F7FB */
+  /* 0.54, not shadcn's 0.554: keeps 4.5:1 for body text on --muted. */
+  --muted-foreground: oklch(0.54 0.041 257.4);
+  --accent: oklch(0.951 0.012 259.8); /* tint #EAEFF7 */
+  --accent-foreground: oklch(0.345 0.083 260.9);
+  /* 0.42 / 0.17: dark enough to stay AA as text on its own 10-20% tints
+     (the destructive button and badge), and inside the sRGB gamut. */
+  --destructive: oklch(0.42 0.17 27.325);
+  --border: oklch(0.929 0.011 256.7); /* line #E3E8EF */
+  --input: oklch(0.929 0.011 256.7);
+  /* Focus ring: the blue, 3:1 against white. */
+  --ring: oklch(0.592 0.091 257.9); /* blue #5B7FB4 */
+
+  --accent-brand: oklch(0.345 0.083 260.9);
+  --accent-brand-foreground: oklch(0.985 0 0);
+  --accent-brand-ink: oklch(0.32 0.083 260.9);
+
+  --success: oklch(0.466 0.053 161); /* sage-ink */
+  --success-foreground: oklch(0.4 0.055 161);
+
+  --surface-inverse: oklch(0.345 0.083 260.9);
+  --surface-inverse-foreground: oklch(0.985 0 0);
+  --surface-inverse-accent: oklch(0.8 0.07 258);
+
+  /* Sidebar: the tinted rail (tint-2) edged by the hairline; the active row
+     is the deeper tint with navy ink and a navy marker bar. --sidebar-
+     foreground is a hair deeper than --foreground so rows rendered at 70-80%
+     opacity still clear 4.5:1 on the rail. */
+  --sidebar: oklch(0.975 0.006 255.5);
+  --sidebar-foreground: oklch(0.3 0.04 257.3);
+  --sidebar-border: oklch(0.929 0.011 256.7);
+  --sidebar-active: oklch(0.951 0.012 259.8);
+  --sidebar-active-foreground: oklch(0.32 0.083 260.9);
+  --sidebar-marker: oklch(0.345 0.083 260.9);
+
+  --chart-1: oklch(0.345 0.083 260.9); /* navy */
+  --chart-2: oklch(0.592 0.091 257.9); /* blue */
+  --chart-3: oklch(0.728 0.039 158.6); /* sage */
+  --chart-4: oklch(0.466 0.053 161); /* sage-ink */
+  --chart-5: oklch(0.711 0.035 256.8); /* meta */
+
+  /* The lotus brand mark: navy outer, sage middle, gold inner petals, white
+     hairline separations. */
+  --lily-outer: #1f3864;
+  --lily-middle: #93af9e;
+  --lily-inner: #fddc47;
+  --lily-line: #ffffff;
+
+  --radius: 0.75rem; /* 12px */
+}
+
+/* Dark theme: deep navy surfaces, a light-blue primary, the same blue ring. */
+.dark {
+  --background: oklch(0.22 0.028 260);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.27 0.032 260);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.27 0.032 260);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.872 0.031 258.9); /* navy-soft #C9D6EA */
+  --primary-foreground: oklch(0.22 0.028 260);
+  --heading: oklch(0.985 0 0);
+  --secondary: oklch(0.32 0.035 260);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.32 0.035 260);
+  --muted-foreground: oklch(0.72 0.03 258);
+  --accent: oklch(0.34 0.04 260);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.185 22.216);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.592 0.091 257.9);
+
+  /* The blue as a fill, held at 0.5 lightness so white text still clears
+     4.5:1; lifted to read as text on the 6% tint. */
+  --accent-brand: oklch(0.5 0.09 258);
+  --accent-brand-foreground: oklch(0.985 0 0);
+  --accent-brand-ink: oklch(0.82 0.06 258);
+
+  --success: oklch(0.72 0.06 161);
+  --success-foreground: oklch(0.8 0.06 161);
+  --surface-inverse: oklch(0.32 0.035 260);
+  --surface-inverse-foreground: oklch(0.985 0 0);
+  --surface-inverse-accent: oklch(0.8 0.07 258);
+
+  --sidebar: oklch(0.25 0.03 260);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-active: oklch(0.3 0.04 260);
+  --sidebar-active-foreground: oklch(0.82 0.06 258);
+  --sidebar-marker: oklch(0.592 0.091 257.9);
+
+  --chart-1: oklch(0.592 0.091 257.9);
+  --chart-2: oklch(0.872 0.031 258.9);
+  --chart-3: oklch(0.728 0.039 158.6);
+  --chart-4: oklch(0.466 0.053 161);
+  --chart-5: oklch(0.711 0.035 256.8);
+
+  --lily-outer: #5b7fb4;
+  --lily-middle: #93af9e;
+  --lily-inner: #fddc47;
+  --lily-line: oklch(0.25 0.03 260);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+  }
+}
+
+/* Reduced motion: every animation and transition collapses to an instant
+   state change for people who asked for it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
