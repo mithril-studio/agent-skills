@@ -40,6 +40,25 @@ git clone --depth 1 https://github.com/mithril-studio/agent-skills /tmp/agent-sk
   && /tmp/agent-skills/install.sh
 ```
 
+Re-running is an update. A full install (no arguments) also removes any skill this
+installer put there earlier that has since been deleted from the repo, so deleting a skill
+here deletes it from the agent on the next install. It tracks what it installed in
+`<dest>/.agent-skills-manifest` and never touches skills that came from somewhere else.
+
+### Conductor
+
+[Conductor](https://conductor.build) runs Claude Code in two places, and each reads
+`~/.claude/skills` on its own machine, so the install has to land in both:
+
+- **Local workspaces** use the skills on your Mac. Run `./install.sh` there.
+- **Cloud workspaces** boot from the organization's Cloud Computer snapshot. Add the
+  one-liner above to the **Install software** script under
+  *Settings → Organization → Cloud Computer* and rebuild. Every build starts from a fresh
+  machine, so deleted skills are gone automatically; rebuild after changing the repo.
+
+Skills committed to a repository's `.claude/skills/` are project-scoped and not needed
+when the global install is in place.
+
 ## Skills
 
 ### [`engineering-skills`](./engineering-skills)

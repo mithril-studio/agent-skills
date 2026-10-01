@@ -10,7 +10,9 @@
 # Skills live in category folders (engineering-skills/code-review-and-quality/SKILL.md) but
 # install flat, because that is the layout agents read: ~/.claude/skills/code-review-and-quality.
 #
-# Idempotent: re-running overwrites, so it doubles as an update.
+# Idempotent: re-running overwrites, so it doubles as an update. A full install also
+# removes skills this installer put there earlier that have since left the repo, so a
+# deleted skill disappears from the agent too. Skills from other sources are untouched.
 
 set -euo pipefail
 
@@ -90,22 +92,67 @@ else
   done
 fi
 
+# The manifest records which skills this installer placed in $DEST, so a later run
+# can tell "deleted from the repo" apart from "installed from somewhere else".
+MANIFEST="$DEST/.agent-skills-manifest"
+previous=()
+if [ -f "$MANIFEST" ]; then
+  while IFS= read -r line; do
+    [ -n "$line" ] && previous+=("$line")
+  done < "$MANIFEST"
+fi
+
 mkdir -p "$DEST"
+installed=()
 for i in "${selected[@]}"; do
   name="${names[$i]}"
   rm -rf "${DEST:?}/$name"
   cp -R "${paths[$i]}" "$DEST/$name"
+  installed+=("$name")
   echo "installed $name -> $DEST/$name"
 done
+
+# A full install prunes: anything we installed before that no longer exists here.
+removed=0
+if [ ${#WANTED[@]} -eq 0 ]; then
+  for old in ${previous[@]+"${previous[@]}"}; do
+    still_here=0
+    for name in "${names[@]}"; do
+      [ "$old" = "$name" ] && { still_here=1; break; }
+    done
+    if [ $still_here -eq 0 ] && [ -e "$DEST/$old" ]; then
+      rm -rf "${DEST:?}/$old"
+      removed=$(( removed + 1 ))
+      echo "removed $old (no longer in the repo)"
+    fi
+  done
+  printf '%s\n' "${names[@]}" > "$MANIFEST"
+else
+  # Partial install: remember the union, prune nothing.
+  printf '%s\n' ${previous[@]+"${previous[@]}"} "${installed[@]}" | sort -u > "$MANIFEST"
+fi
 
 # Some skills link to ../../references/*.md. From an installed skill at
 # $DEST/<name>/ that resolves to $DEST/../references, so the shared folder has to
 # land one level above the skills directory to keep those links working.
 if [ -d "$SOURCE/references" ]; then
   REF_DEST="$(dirname "$DEST")/references"
+  REF_MANIFEST="$REF_DEST/.agent-skills-manifest"
   mkdir -p "$REF_DEST"
+  # Same pruning as above, for reference files that left the repo.
+  if [ ${#WANTED[@]} -eq 0 ] && [ -f "$REF_MANIFEST" ]; then
+    while IFS= read -r old; do
+      [ -n "$old" ] || continue
+      if [ ! -e "$SOURCE/references/$old" ] && [ -e "$REF_DEST/$old" ]; then
+        rm -f "$REF_DEST/$old"
+        removed=$(( removed + 1 ))
+        echo "removed references/$old (no longer in the repo)"
+      fi
+    done < "$REF_MANIFEST"
+  fi
   cp -R "$SOURCE/references/." "$REF_DEST/"
+  (cd "$SOURCE/references" && find . -type f | sed 's|^\./||' | sort) > "$REF_MANIFEST"
   echo "installed references -> $REF_DEST"
 fi
 
-echo "done: ${#selected[@]} skill(s) in $DEST"
+echo "done: ${#selected[@]} skill(s) in $DEST, $removed removed"
