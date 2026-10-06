@@ -1,6 +1,6 @@
 ---
 name: web-app-design
-description: The house style for every Mithril Studio web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app. Use when building or restyling any screen, shell, page, card, form, dialog or navigation in a Next.js/Tailwind/shadcn app; when starting a new app and it needs a design system; when asked to "make it look like our other apps", "match the e-learning / legal-ai-app style", or to decide where a back button, title, divider line, tab row or action goes.
+description: The house style for every Mithril Studio web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app. Use when building or restyling any screen, shell, page, card, form, dialog or navigation in a Next.js/Tailwind/shadcn app; when starting a new app and it needs a design system; when asked to "make it look like our other apps", "match the e-learning / legal-ai-app style", or to decide where a back button, title, divider line, tab row, filter, search box, sort control or action goes.
 ---
 
 # Web app design — the house style
@@ -45,8 +45,9 @@ Rules that the tokens encode:
   "done", red for "danger"; neither is decoration. Never add a second accent, a
   gradient, or a purple/indigo anything.
 - **Lines, not shadows.** Depth comes from a 1px hairline (`border-border`) or a
-  10% ink ring (`ring-1 ring-foreground/10`). The only shadow in the whole system is
-  `shadow-xs` on the page-header icon tile.
+  10% ink ring (`ring-1 ring-foreground/10`). The only shadows in the whole system are
+  `shadow-xs` on the page-header icon tile and `shadow-sm` on the active segment of a
+  segmented control.
 - **Dark mode is a token swap**, class-based (`.dark` on `<html>`), seeded from a
   `theme` cookie on the server so there is no flash. Every token has a dark value;
   components never branch on theme.
@@ -61,10 +62,9 @@ Rules that the tokens encode:
 │ brand row    │ top bar  [← Terug naar …]            [chrome] [actions] │  72px, border-b
 │ 72px, border-b├────────────────────────────────────────────────────────┤
 │              │ ┌──────────────────────────────────────────────────┐   │
-│  nav items   │ │ [icon tile]  Page title                 [actions] │   │  100px, border-b
-│              │ ├──────────────────────────────────────────────────┤   │
-│              │ │ Tab · Tab · Tab                                   │   │  52px, border-b (only with tabs)
-│  (100px gap) │ ├──────────────────────────────────────────────────┤   │
+│  nav items   │ │ [icon tile]  Page title       [filters] [actions] │   │  100px title row
+│              │ │ Tab    Tab    Tab   (underline, only with tabs)   │   │  same header block
+│  (100px gap) │ ├──────────────────────────────────────────────────┤   │  one border-b under both
 │  ── admin ── │ │                                                   │   │
 │  nav items   │ │   content, max-w 1248, px-10 py-8, gap 22px        │   │  the only scroll region
 │              │ │                                                   │   │
@@ -83,9 +83,10 @@ never add another:
 3. Sidebar admin-group top: a `border-t` after a `mt-[100px]` gap, no label.
 4. Sidebar account row top (`border-t`, `p-3`).
 5. Top bar bottom (`h-[72px] border-b border-border px-6`).
-6. Page header bottom (`h-[100px]` title row, `border-b`).
-7. Tab strip bottom (`h-[52px]`, `border-b`), only when the page has route tabs.
-8. Inside content: card footers (`border-t bg-muted/50`), table rows
+6. Page header bottom: one `border-b` under the whole header block — the title row
+   and, when the page has route tabs, the tab row beneath it. Never a second line
+   between title and tabs; the active tab's 2px underline rests on this one.
+7. Inside content: card footers (`border-t bg-muted/50`), table rows
    (`[&_tr]:border-b`, last row none), dialog/dropdown edges.
 
 Nothing else draws a line. No vertical rules between columns, no underlined headings,
@@ -129,23 +130,60 @@ no boxed sections — a section is an `h2` plus spacing.
 
 ### Page header (first child of `<main>` on every shell page)
 
-- Title row `h-[100px]`, inner container `mx-auto max-w-[1248px] px-10` (or the narrow
+- One block, one divider: `<div className="border-b">` wrapping the title row and,
+  when present, the tab row directly under it.
+- Title row `min-h-[100px]`, inner container `mx-auto max-w-[1248px] px-10` (or the narrow
   variant `max-w-[1229px] px-8` for settings-like pages), `gap-x-4 items-center`.
 - **Icon tile**: `size-11 rounded-xl border border-border bg-card text-foreground/75
   shadow-xs`, Lucide icon `size-5`, `aria-hidden`. Decorative — the title carries the
   meaning.
 - **`<h1>`**: `font-heading text-2xl leading-tight font-semibold tracking-tight
   text-heading`. Exactly one per page; it lives in the header, never in the body.
-  Optional `titleExtra` (a status pill) sits inline after it; optional actions sit at
-  the right edge.
-- **Tab strip** (`h-[52px]`, only for route-level sub-navigation): a `<nav>` of
-  links, *not* Radix Tabs — each entry navigates. Pill treatment: `rounded-lg px-3
-  py-1.5 text-sm font-medium`, active `bg-accent-brand/6 text-accent-brand-ink` +
-  `aria-current`, inactive `text-muted-foreground hover:bg-muted`. Scrolls sideways
-  (`overflow-x-auto`) rather than wrapping. Radix `Tabs` is only for in-page panel
-  switching.
-- Both rows have fixed heights so the divider lines land at the same y on every page.
-  **Back links therefore do not go in the header** — they would change its height.
+  Optional `titleExtra` (a status pill) sits inline after it; **page-level filters**
+  (scope, period — see §5) sit right-aligned in a `filters` slot, then optional actions
+  at the right edge. Below `md` the filters slot wraps onto its own row under the
+  title — the one case the title row grows past 100px.
+- **Tabs — the settings-tabs pattern** (only for route-level sub-navigation:
+  settings, analytics, organisation detail, a builder workspace). The tab row sits
+  directly under the title inside the same header block — no separate tab band, no
+  second divider. Underline tabs, not pills:
+
+  ```tsx
+  // components/header-tabs.tsx
+  export function HeaderTabs({ label, children }: { label: string; children: React.ReactNode }) {
+    return (
+      // -mb-px pulls the active underline onto the header block's divider
+      <nav aria-label={label} className="-mb-px min-w-0">
+        <ul className="flex items-center gap-6 overflow-x-auto">{children}</ul>
+      </nav>
+    );
+  }
+  export const headerTabClass = (active: boolean) => cn(
+    "flex items-center gap-2 border-b-2 pb-3 text-sm whitespace-nowrap transition-colors outline-none focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/50",
+    active ? "border-accent-brand font-semibold text-foreground"
+           : "border-transparent font-medium text-muted-foreground hover:text-foreground",
+  );
+  // each entry:
+  // <li className="shrink-0">
+  //   <Link href={href} aria-current={active ? "page" : undefined} className={headerTabClass(active)}>…</Link>
+  // </li>
+  ```
+
+  - Active: semibold foreground text + 2px navy underline + `aria-current="page"`.
+    Inactive: medium muted text, transparent underline. No pill background, no tint.
+  - `gap-6` between entries; the row scrolls sideways (`overflow-x-auto`) rather than
+    wrapping on narrow viewports.
+  - A `<nav>` of links, *not* Radix Tabs — each entry navigates, so `role="tab"` would
+    promise a panel switch that never happens. Radix `Tabs` is only for in-page panel
+    switching. A form `<button>` that must sit in the row uses the same class helper.
+  - The layout owns `<main>`, the `PageHeader` (with `tabs={<SettingsNav />}`) and the
+    single `h1`. Each tab page opens with a **muted one-line description**
+    (`text-sm text-muted-foreground`, the `aria-labelledby` of its `<section>`), not an
+    `h2` repeating the tab name. Settings-like pages use the narrow width; forms there
+    are capped at `max-w-[560px]`, optional fields say "(optioneel)" in the label, and
+    every submit reads "Opslaan".
+- The title row has a fixed height so the title and divider land at the same y on every
+  page. **Back links therefore do not go in the header** — they would change its height.
 
 ### Content pane
 
@@ -208,7 +246,28 @@ Vendored shadcn/ui (Radix) components, styled through the tokens. Defaults:
 | Dark slab | `rounded-xl bg-surface-inverse text-surface-inverse-foreground p-6`: eyebrow 11.5px uppercase tracked at 70%, title 19px semibold, white action button. One per screen at most. |
 | Hub card (landing grids) | `rounded-xl border bg-card p-5`, 36px icon tile on `bg-accent-brand/10 text-accent-brand-ink`, 15px semibold title, 13px muted description, `ArrowUpRight` top-right on hover; "Binnenkort" pill for not-built-yet. |
 
-## 5. Typography scale
+## 5. Filters, search and tables
+
+Every list or table page uses one URL-synced filtering pattern: filters apply on change,
+the chip's value is the indicator, and the query string is the state. Components,
+placement and the ten rules are in
+[`references/filtering.md`](references/filtering.md) — read it before building any page
+with a filter, search box, sort, or table toolbar.
+
+The short version:
+
+- **Page-level filters** (scope, period — anything that changes the KPIs) go in the page
+  header's `filters` slot, right of the title (`<PageFilters>` portal for tab pages under
+  a shared layout). **Table-level filters** (search, status) go in the `TableToolbar`
+  inside the table card.
+- `FilterChip` "Filiaal: Alle filialen ⌄" (key muted 500, value ink 600, `h-10
+  rounded-[10px]`); `SegmentedControl` on a `bg-muted` track, active segment `bg-card
+  shadow-sm` (the second permitted shadow); `PeriodControl` 7 / 30 / 90 dagen /
+  Aangepast; `SortableHead` with `aria-sort`.
+- No "Toepassen" buttons, no scope pills, "Wissen" only when something is non-default,
+  "Geen resultaten" + "Filters wissen" inside the table.
+
+## 6. Typography scale
 
 | Use | Classes |
 |---|---|
@@ -223,9 +282,10 @@ Vendored shadcn/ui (Radix) components, styled through the tokens. Defaults:
 | Reading `h1` | `text-[32px] font-bold tracking-[-0.03em]` (lesson title) |
 
 Never skip heading levels. Pages contribute the `h1` via the page header; layouts
-with tabs keep the `h1` in the layout and each tab page starts at `h2`.
+with tabs keep the `h1` in the layout; each tab page opens with a muted description and
+uses `h2` only for real sections below it, never to repeat the tab name.
 
-## 6. Auth and public screens
+## 7. Auth and public screens
 
 Centred column, `min-h-screen p-8`, `gap-6`: the brand lockup (lotus glyph 28px +
 product name in the heading face, plain text not a heading) above a `Card
@@ -234,7 +294,7 @@ form in `CardContent space-y-4`; submit full-width in the footer; secondary link
 `text-sm text-muted-foreground hover:underline`. Errors: `role="alert"` box,
 `rounded-lg border-destructive/30 bg-destructive/10 text-destructive`.
 
-## 7. Decide like the reference apps
+## 8. Decide like the reference apps
 
 - **Server first.** Shell, sidebar, page header and pages are Server Components; the
   client leaves are the nav (active route), the account menu, the collapse toggle and
@@ -255,7 +315,7 @@ form in `CardContent space-y-4`; submit full-width in the footer; secondary link
   on the active nav/tab, dot + text on every status, labels on every input, one `h1`,
   one scroll region, `main-content` landmark. Run axe on every new route and state.
 
-## 8. Do not
+## 9. Do not
 
 - Put a back link in the page header, above the title, or in the body.
 - Give the active sidebar row a solid navy fill, or make the sidebar a dark panel.
@@ -265,26 +325,34 @@ form in `CardContent space-y-4`; submit full-width in the footer; secondary link
 - Use colour alone for status, or an icon alone for an action without an accessible
   name.
 - Let the header rows vary in height between pages — the lines must align.
+- Put tabs in their own band with a second divider, or style them as pills.
+- Repeat the active tab's name as an `h2` on a tab page.
+- Add a "Toepassen"/"Filteren" button, a GET `<form>` for filters, a separate scope
+  badge, or a label above a filter dropdown.
 - Use `prefers-color-scheme` or client-only theme detection.
 
-## 9. Starting a new app — checklist
+## 10. Starting a new app — checklist
 
 1. `globals.css` ← `references/tokens.css`; fonts via `next/font/google` bound to
    `--font-archivo`, `--font-space-grotesk`, `--font-ibm-plex-mono`.
 2. Vendor shadcn `button`, `card`, `input`, `label`, `textarea`, `select`,
-   `dropdown-menu`, `dialog`, `alert-dialog`, `tabs`, `table`; apply the presets in §4.
+   `dropdown-menu`, `dialog`, `alert-dialog`, `popover`, `tabs`, `table`; apply the presets in §4.
 3. Build the shell from §2: `AppShellFrame`, `Sidebar` (+ `SidebarNav`, `AccountMenu`,
    `SidebarToggle`), `Topbar` (+ `TopbarLead`, `TopbarActions` portals), `PageHeader`,
-   `StatusPill`, `BackLink`, `SkipLink`.
-4. Add the design-token contrast test from the e-learning app
+   `StatusPill`, `BackLink`, `SkipLink`, `HeaderTabs`.
+4. Add `components/filters/*`, `lib/list-query.ts` and `lib/period-query.ts` from
+   `references/filtering.md` before the first list page.
+5. Add the design-token contrast test from the e-learning app
    (`tests/unit/design-tokens-contrast.test.ts`) so a token edit cannot drop below AA.
-5. Add an axe e2e spec covering each route, its dark variant, collapsed sidebar, open
+6. Add an axe e2e spec covering each route, its dark variant, collapsed sidebar, open
    account menu and 320px.
 
 ## Sources
 
 - e-learning: `src/app/globals.css`, `src/components/shell/*`,
-  `src/components/page-header.tsx`, `src/components/status-pill.tsx`,
+  `src/components/page-header.tsx`, `src/components/header-tabs.tsx`,
+  `src/app/(learner)/(shell)/instellingen/*`, `src/components/filters/*`,
+  `src/lib/list-query.ts`, `src/lib/period-query.ts`, `src/components/status-pill.tsx`,
   `src/components/ui/*`, `src/components/learner/continue-banner.tsx`,
   `src/app/(platform-admin)/(builder)/cursus-bouwer/[courseId]/(workspace)/workspace-frame.tsx`,
   `src/components/lesson-player/*`.
