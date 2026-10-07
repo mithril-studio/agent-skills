@@ -1,6 +1,6 @@
 ---
 name: web-app-design
-description: The house style for every Mithril Studio web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app. Use when building or restyling any screen, shell, page, card, form, dialog or navigation in a Next.js/Tailwind/shadcn app; when starting a new app and it needs a design system; when asked to "make it look like our other apps", "match the e-learning / legal-ai-app style", or to decide where a back button, title, divider line, tab row or action goes.
+description: The house style for every Mithril Studio web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app. Use when building or restyling any screen, shell, page, card, form, dialog or navigation in a Next.js/Tailwind/shadcn app; when starting a new app and it needs a design system; when asked to "make it look like our other apps", "match the e-learning / legal-ai-app style", or to decide where a back button, title, divider line, tab row, in-page menu bar, segmented control or action goes.
 ---
 
 # Web app design — the house style
@@ -61,11 +61,11 @@ Rules that the tokens encode:
 │ brand row    │ top bar  [← Terug naar …]            [chrome] [actions] │  72px, border-b
 │ 72px, border-b├────────────────────────────────────────────────────────┤
 │              │ ┌──────────────────────────────────────────────────┐   │
-│  nav items   │ │ [icon tile]  Page title                 [actions] │   │  100px, border-b
-│              │ ├──────────────────────────────────────────────────┤   │
-│              │ │ Tab · Tab · Tab                                   │   │  52px, border-b (only with tabs)
-│  (100px gap) │ ├──────────────────────────────────────────────────┤   │
-│  ── admin ── │ │                                                   │   │
+│  nav items   │ │ [icon tile]  Page title      [filters] [actions] │   │  100px title row
+│              │ │ Tab   Tab   Tab                                   │   │  tab row, only with route tabs
+│              │ ├──━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┤   │  ONE border-b under both;
+│  (100px gap) │ │                                                   │   │  the active tab's 2px underline
+│  ── admin ── │ │                                                   │   │  rests on it
 │  nav items   │ │   content, max-w 1248, px-10 py-8, gap 22px        │   │  the only scroll region
 │              │ │                                                   │   │
 ├──────────────┤ └──────────────────────────────────────────────────┘   │
@@ -83,9 +83,10 @@ never add another:
 3. Sidebar admin-group top: a `border-t` after a `mt-[100px]` gap, no label.
 4. Sidebar account row top (`border-t`, `p-3`).
 5. Top bar bottom (`h-[72px] border-b border-border px-6`).
-6. Page header bottom (`h-[100px]` title row, `border-b`).
-7. Tab strip bottom (`h-[52px]`, `border-b`), only when the page has route tabs.
-8. Inside content: card footers (`border-t bg-muted/50`), table rows
+6. Page header bottom: **one** `border-b` under the whole header block — the `100px`
+   title row *and* the tab row when the page has route tabs. There is no separate tab
+   band and no second divider; the active tab's 2px underline sits on this line.
+7. Inside content: card footers (`border-t bg-muted/50`), table rows
    (`[&_tr]:border-b`, last row none), dialog/dropdown edges.
 
 Nothing else draws a line. No vertical rules between columns, no underlined headings,
@@ -138,14 +139,113 @@ no boxed sections — a section is an `h2` plus spacing.
   text-heading`. Exactly one per page; it lives in the header, never in the body.
   Optional `titleExtra` (a status pill) sits inline after it; optional actions sit at
   the right edge.
-- **Tab strip** (`h-[52px]`, only for route-level sub-navigation): a `<nav>` of
-  links, *not* Radix Tabs — each entry navigates. Pill treatment: `rounded-lg px-3
-  py-1.5 text-sm font-medium`, active `bg-accent-brand/6 text-accent-brand-ink` +
-  `aria-current`, inactive `text-muted-foreground hover:bg-muted`. Scrolls sideways
-  (`overflow-x-auto`) rather than wrapping. Radix `Tabs` is only for in-page panel
-  switching.
-- Both rows have fixed heights so the divider lines land at the same y on every page.
-  **Back links therefore do not go in the header** — they would change its height.
+- **Filters slot**: page-level filters (a scope chip, a period control — anything that
+  changes the KPIs and content of the *whole* page) sit right-aligned next to the
+  title, before the actions. A tab page under a shared layout portals into it
+  (`PageFilters`, same pattern as `TopbarActions`). Below `md` the slot wraps onto its
+  own row under the title — the one case the title row grows past 100px.
+- **Tab row** (only for route-level sub-navigation): rendered *inside* the header block,
+  directly under the title row, left-aligned with the icon tile. Full spec in §2a
+  below. The block then closes with its single `border-b`.
+- The title row has a fixed height so the title and the divider land at the same y on
+  every page (plus the tab row, on pages that have one — the tab row itself is a fixed
+  height too). **Back links therefore do not go in the header** — they would change
+  its height.
+
+### 2a. In-page tab row / menu bar (`HeaderTabs`)
+
+The one sub-navigation pattern for a page with several routes under one title:
+settings (Profiel · Beveiliging · Meldingen · Weergave · Privacy), analytics, an
+organisation's detail area, the course-builder workspace menu. Settled in the
+e-learning app in September 2026 (commit "give every tabbed page header the merged
+block and underline tabs"); the earlier 52px pill band is gone and must not come back.
+
+**Underline tabs, not pills, inside the title block, one divider for both.**
+
+```
+┌─ header block ──────────────────────────────────────────── border-b ─┐
+│ [tile]  Instellingen                                [filters][actions]│  100px
+│                                                                      │
+│ Profiel   Beveiliging   Meldingen   Weergave   Privacy               │  text-sm, gap-6
+│ ━━━━━━━                                                              │  2px accent-brand-ink
+└──────────────────────────────────────────────────────────────────────┘  ← underline rests on the line
+```
+
+Markup and classes (copy verbatim; `src/components/header-tabs.tsx`):
+
+- Wrapper: `<nav aria-label={…} className="-mb-px min-w-0">` →
+  `<ul className="flex items-center gap-6 overflow-x-auto">` → one `<li
+  className="shrink-0">` per entry. The `-mb-px` pulls the row down one pixel so the
+  active underline overlaps the block's `border-b` instead of floating above it.
+- Every entry, link or button:
+  `flex items-center gap-2 border-b-2 pb-3 text-sm whitespace-nowrap transition-colors
+  outline-none focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/50`.
+- **Active**: `border-accent-brand-ink font-semibold text-foreground` +
+  `aria-current="page"`. Weight change *and* underline *and* `aria-current` — never
+  colour alone.
+- **Inactive**: `border-transparent font-medium text-muted-foreground
+  hover:text-foreground`. The transparent 2px border keeps every entry the same height,
+  so nothing shifts when the active tab changes.
+- The underline is `--accent-brand-ink` (the accent's *ink*, ≥ 3:1 on the card), not
+  `--accent-brand`: a pastel brand preset would otherwise leave the active tab with an
+  invisible underline. No background on any entry, no pill, no shadow.
+- Optional leading Lucide icon per entry (`size-4 shrink-0 aria-hidden`) — the builder's
+  workspace menu uses them, the settings and analytics rows do not. Either is fine;
+  the label always carries the meaning.
+- Overflow: the row **scrolls sideways** (`overflow-x-auto`), never wraps and never
+  collapses into a "more" menu.
+
+Rules:
+
+- It is a `<nav>` of `Link`s, **not** Radix `Tabs`: activating an entry navigates to
+  another route, so `role="tab"`/`"tabpanel"` would promise assistive technology an
+  in-page panel switch that never happens (WAI-ARIA APG: navigation gets `<nav>` + links
+  + `aria-current`). Links cannot create a keyboard trap.
+- An entry that must go through a server action (e.g. "Gebruikers beheren", which sets an
+  acting organisation before redirecting) is a `<form action>` with a `<button
+  type="submit">` carrying exactly the same classes and `aria-current` as its link
+  siblings. Export the class helper so this stays identical — the e-learning app has
+  `headerTabClass(active)`.
+- Active-route resolution is the only client concern: the row is a small `"use client"`
+  leaf under a Server Component layout (`usePathname()`; exact match for the index
+  route, prefix match for the rest). Which entries show is decided by the **layout**
+  per role — never surface a tab the role cannot open.
+- **Headings**: the layout renders `<main>`, the `PageHeader` and therefore the single
+  `h1`; each tab page starts at `h2` (analytics, organisation detail) *or* opens with a
+  muted one-line description and no heading at all when a heading would only repeat the
+  active tab's label (settings). Never a second `h1`.
+- The row goes in the `PageHeader` `tabs` prop (shell pages) or directly under the title
+  row inside a full-bleed workspace's `<header>` (§3) — in both cases inside the same
+  block as the title, above the block's one `border-b`. Nowhere else: not in the body,
+  not in the top bar, not in a card.
+- Widths follow the header: wide (`max-w-[1248px] px-10`) or narrow
+  (`max-w-[1229px] px-8`, settings). The tab row's left edge aligns with the icon tile.
+
+### 2b. Segmented control (in-page panel or mode switching)
+
+For switching what is *shown in place* — no navigation — use the opposite treatment so
+the two are never confused: a **filled segmented control**, not underline tabs.
+
+- **Radix `Tabs`** (vendored `ui/tabs.tsx`) when it swaps a panel on the same page (an
+  editor's side rail, a preview/edit split): `TabsList` = `inline-flex w-full
+  items-center gap-0.5 rounded-lg bg-muted/60 p-0.5`; `TabsTrigger` = `flex-1
+  rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground`, active
+  `data-[state=active]:bg-card data-[state=active]:text-foreground` with `shadow-none`;
+  focus `ring-3 ring-ring/50`. Radix owns roles, roving tabindex and arrow keys.
+- **Link toggle in the same skin** when the two "modes" are in fact two routes but read
+  as one control (the quiz editor's Test / Examen switch): a `<nav>` → `<ul
+  className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">` of `Link`s,
+  `rounded-md px-3 py-1.5 text-sm font-medium`, active `bg-card text-foreground
+  shadow-sm` + `aria-current="page"`, inactive `text-muted-foreground
+  hover:text-foreground`. Same tray look as Radix Tabs, same `<nav>`-not-`role="tab"`
+  reasoning as §2a.
+- A segmented control lives **in the body or a rail**, sized to its content or
+  `w-full` inside a card/rail — never in the page header, which only ever holds the
+  underline route tabs.
+
+Decision rule: *does activating it change the URL?* Yes → underline `HeaderTabs` in
+the header block (§2a). No → filled Radix `Tabs` in the body (§2b). Two routes that
+behave like a mode switch → the link toggle in the §2b skin, in the body.
 
 ### Content pane
 
@@ -182,9 +282,14 @@ Related rules:
   text-sm text-muted-foreground`, `ChevronRight size-3.5` separators, last crumb
   `aria-current="page" font-medium text-foreground`. The top-bar back link then
   points one level up.
-- **Full-bleed workspaces** (editors with their own chrome, no app sidebar): a `h-14`
-  header `border-b bg-card px-4` with a ghost `icon-sm` back button (`ArrowLeft`),
-  the `h1` at `text-[15px] font-semibold tracking-tight`, then a status pill.
+- **Full-bleed workspaces** (editors with their own chrome): a `<header>` block
+  `border-b border-border px-4` holding a `h-[72px]` title row — the `h1` at
+  `text-[15px] leading-tight font-bold tracking-tight` (truncating), an unsaved-changes
+  hint, the publish/action cluster `ml-auto gap-2` — and, when the workspace has
+  sections, the §2a underline tab row directly under it inside the same block, one
+  `border-b` under both (course builder). Variants without the app sidebar put a ghost
+  `icon-sm` back button (`ArrowLeft`) before the `h1` and a status pill after it
+  (Legal AI editor, `h-14`).
 - **Focused readers** (lesson player): the course outline rail replaces the sidebar;
   its back link ("Terug naar cursussen", `ChevronLeft size-3.5`, 12.5px) sits at the
   top of that rail, above the title and progress bar.
@@ -204,6 +309,8 @@ Vendored shadcn/ui (Radix) components, styled through the tokens. Defaults:
 | Status pill | `h-[22px] rounded-full px-2.5 text-xs font-semibold`, a 5px dot *and* a label — tones `success` / `accent` / `neutral` / `destructive`. Colour is never the only carrier. |
 | KPI tile | `rounded-xl border bg-card px-[18px] py-4`: 12px semibold muted label, `font-mono text-3xl font-medium tracking-[-0.03em]` figure, a 4px meter `rounded-full bg-muted` with an accent/success fill. |
 | Dropdown / Dialog / AlertDialog | Radix, `rounded-xl`, popover surface; confirmation = `AlertDialog`, never a hand-rolled overlay. |
+| Tab row (route sub-nav) | §2a: `<nav>` of links in the header block, `gap-6`, `text-sm pb-3 border-b-2`, active `border-accent-brand-ink font-semibold text-foreground` + `aria-current`, inactive `border-transparent text-muted-foreground`. Never pills, never Radix Tabs. |
+| Segmented control (in-page) | §2b: tray `rounded-lg bg-muted/60 p-0.5`, segments `rounded-md px-3 py-1.5 text-sm font-medium`, active `bg-card text-foreground`. Radix `Tabs` for panels; the same skin as a `<nav>` of links for a two-route mode switch. Body only. |
 | Empty state | `rounded-xl border border-dashed border-border px-6 py-10 text-center text-sm text-muted-foreground`, optionally one outline CTA. |
 | Dark slab | `rounded-xl bg-surface-inverse text-surface-inverse-foreground p-6`: eyebrow 11.5px uppercase tracked at 70%, title 19px semibold, white action button. One per screen at most. |
 | Hub card (landing grids) | `rounded-xl border bg-card p-5`, 36px icon tile on `bg-accent-brand/10 text-accent-brand-ink`, 15px semibold title, 13px muted description, `ArrowUpRight` top-right on hover; "Binnenkort" pill for not-built-yet. |
@@ -223,7 +330,9 @@ Vendored shadcn/ui (Radix) components, styled through the tokens. Defaults:
 | Reading `h1` | `text-[32px] font-bold tracking-[-0.03em]` (lesson title) |
 
 Never skip heading levels. Pages contribute the `h1` via the page header; layouts
-with tabs keep the `h1` in the layout and each tab page starts at `h2`.
+with tabs keep the `h1` in the layout and each tab page starts at `h2` — or, when an
+`h2` would only repeat the active tab's label, opens with a muted one-line description
+and no heading (settings).
 
 ## 6. Auth and public screens
 
@@ -262,6 +371,8 @@ form in `CardContent space-y-4`; submit full-width in the footer; secondary link
 - Add a second accent, a gradient, box shadows on cards, `rounded-2xl`+ on anything
   but pills, or a coloured page background.
 - Hand-roll a dropdown, dialog, tab set or tooltip.
+- Render route tabs as pills, in their own band under the header, or as Radix `Tabs`;
+  or put a segmented control in the page header.
 - Use colour alone for status, or an icon alone for an action without an accessible
   name.
 - Let the header rows vary in height between pages — the lines must align.
@@ -274,8 +385,9 @@ form in `CardContent space-y-4`; submit full-width in the footer; secondary link
 2. Vendor shadcn `button`, `card`, `input`, `label`, `textarea`, `select`,
    `dropdown-menu`, `dialog`, `alert-dialog`, `tabs`, `table`; apply the presets in §4.
 3. Build the shell from §2: `AppShellFrame`, `Sidebar` (+ `SidebarNav`, `AccountMenu`,
-   `SidebarToggle`), `Topbar` (+ `TopbarLead`, `TopbarActions` portals), `PageHeader`,
-   `StatusPill`, `BackLink`, `SkipLink`.
+   `SidebarToggle`), `Topbar` (+ `TopbarLead`, `TopbarActions` portals), `PageHeader`
+   (+ `PageFilters` portal), `HeaderTabs` + `headerTabClass`, `StatusPill`, `BackLink`,
+   `SkipLink`.
 4. Add the design-token contrast test from the e-learning app
    (`tests/unit/design-tokens-contrast.test.ts`) so a token edit cannot drop below AA.
 5. Add an axe e2e spec covering each route, its dark variant, collapsed sidebar, open
@@ -284,7 +396,11 @@ form in `CardContent space-y-4`; submit full-width in the footer; secondary link
 ## Sources
 
 - e-learning: `src/app/globals.css`, `src/components/shell/*`,
-  `src/components/page-header.tsx`, `src/components/status-pill.tsx`,
+  `src/components/page-header.tsx`, `src/components/header-tabs.tsx` (+ its callers
+  `instellingen/settings-nav.tsx`, `analytics/analytics-tabs.tsx`,
+  `organisations/[id]/organisation-nav.tsx`, `cursus-bouwer/.../builder-tabs.tsx`),
+  `src/components/ui/tabs.tsx`, `src/app/(platform-admin)/(builder)/quiz-editor/mode-toggle.tsx`,
+  `src/components/filters/page-filters.tsx`, `src/components/status-pill.tsx`,
   `src/components/ui/*`, `src/components/learner/continue-banner.tsx`,
   `src/app/(platform-admin)/(builder)/cursus-bouwer/[courseId]/(workspace)/workspace-frame.tsx`,
   `src/components/lesson-player/*`.

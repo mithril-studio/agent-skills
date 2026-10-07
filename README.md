@@ -80,7 +80,7 @@ How I want an app to look.
 
 | Skill | What it does |
 |---|---|
-| [`web-app-design`](./design-skills/web-app-design) | The house style for every web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app: tokens, type, the sidebar + top bar + page-header shell, where every divider line sits, where back links and actions go, and the component presets. Ships a copy-paste `tokens.css`. |
+| [`web-app-design`](./design-skills/web-app-design) | The house style for every web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app: tokens, type, the sidebar + top bar + page-header shell, where every divider line sits, where back links and actions go, the in-page tab row / menu bar and segmented control, and the component presets. Ships a copy-paste `tokens.css`. |
 
 ### [`references`](./references)
 
