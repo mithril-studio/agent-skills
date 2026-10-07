@@ -1,7 +1,8 @@
 /*
  * House-style design tokens — the "Legal Control" look shared by every
  * Mithril Studio web app (extracted from foundation-e-learning and
- * legal-ai-app, September 2026). Drop this into src/app/globals.css of a
+ * legal-ai-app, September 2026; --progress, --link and the
+ * --lesson-* environment added October 2026). Drop this into src/app/globals.css of a
  * Tailwind v4 + shadcn/ui app, after `@import "tailwindcss";`.
  *
  * Every value is OKLCH and has been checked for WCAG 2.1 AA: body text 4.5:1
@@ -73,6 +74,17 @@
      exactly the title and nothing else. */
   --color-heading: var(--heading);
 
+  /* The progress fill (progress bars, the lesson outline meter, the slider
+     range) and link text: both in the primary hue, but their own tokens
+     because they carry different floors from the button fill. --primary only
+     has to carry its label; --progress is an indicator that clears 3:1 on
+     the canvas and on a card, --link is text at 4.5:1 on both. A pale brand
+     primary (ADR-0017) therefore stays pale on the button and is deepened
+     only here. */
+  --color-progress: var(--progress);
+  --color-link: var(--link);
+
+
   /* Charts, in the order to assign series. */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -89,6 +101,42 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* The lesson environment (the player route, src/components/lesson-player/
+     and the interactive blocks it renders) — its own palette, declared
+     below. Kept separate from the platform tokens so the player can carry the
+     warm reading canvas without restyling every other screen; an
+     organisation's house style still wins (see [data-lesson-branded]). */
+  --color-lesson-canvas: var(--lesson-canvas);
+  --color-lesson-rail: var(--lesson-rail);
+  --color-lesson-rail-foreground: var(--lesson-rail-foreground);
+  --color-lesson-rail-muted: var(--lesson-rail-muted);
+  --color-lesson-surface: var(--lesson-surface);
+  --color-lesson-heading: var(--lesson-heading);
+  --color-lesson-ink: var(--lesson-ink);
+  --color-lesson-body: var(--lesson-body);
+  --color-lesson-muted: var(--lesson-muted);
+  --color-lesson-line: var(--lesson-line);
+  --color-lesson-line-strong: var(--lesson-line-strong);
+  --color-lesson-primary: var(--lesson-primary);
+  --color-lesson-primary-foreground: var(--lesson-primary-foreground);
+  --color-lesson-accent: var(--lesson-accent);
+  --color-lesson-accent-foreground: var(--lesson-accent-foreground);
+  --color-lesson-eyebrow: var(--lesson-eyebrow);
+  --color-lesson-stop: var(--lesson-stop);
+  --color-lesson-stop-foreground: var(--lesson-stop-foreground);
+  --color-lesson-correct: var(--lesson-correct);
+  --color-lesson-wrong: var(--lesson-wrong);
+  --color-lesson-player: var(--lesson-player);
+  --color-lesson-player-foreground: var(--lesson-player-foreground);
+  /* Answer cards 14px and the video/image hero 18px on the default 12px
+     radius — derived from --radius so an organisation's corner style
+     (ADR-0017) reaches them too. Lesson buttons use rounded-lg (= --radius). */
+  --radius-lesson-card: calc(var(--radius) * 1.1667);
+  --radius-lesson-hero: calc(var(--radius) * 1.5);
+  --shadow-lesson-hero:
+    0 24px 48px -24px oklch(0.197 0.021 267.5 / 0.45),
+    0 2px 6px oklch(0.197 0.021 267.5 / 0.08);
 }
 
 :root {
@@ -116,6 +164,11 @@
   --popover-foreground: oklch(0.372 0.039 257.3);
   --primary: oklch(0.345 0.083 260.9); /* navy #1F3864 */
   --primary-foreground: oklch(0.985 0 0);
+  /* Same navy as --primary by default; their own tokens so a brand theme
+     can deepen an indicator (3:1) or link text (4.5:1) without darkening
+     the button fill — see the @theme comment. */
+  --progress: oklch(0.345 0.083 260.9);
+  --link: oklch(0.345 0.083 260.9);
   --heading: oklch(0.372 0.039 257.3);
   --secondary: oklch(0.951 0.012 259.8); /* tint #EAEFF7 */
   --secondary-foreground: oklch(0.345 0.083 260.9);
@@ -168,6 +221,36 @@
   --lily-line: #ffffff;
 
   --radius: 0.75rem; /* 12px */
+
+  /* The lesson environment's default palette (lesson redesign, 2026-10-06):
+     a warm reading canvas with navy ink and a bronze accent. Bronze is for
+     fills and progress only, never running text — --lesson-eyebrow is the
+     deepened bronze that clears 4.5:1 as text on the canvas and on a card.
+     Applies only while no organisation theme is active: [data-lesson-branded]
+     and .dark below re-point every one of these at the platform/brand
+     tokens. tests/unit/design-tokens-contrast.test.ts checks the pairs. */
+  --lesson-canvas: oklch(0.965 0.007 80.7); /* #f6f3ee */
+  --lesson-rail: oklch(0.983 0.005 78.3); /* #fbf9f6 */
+  --lesson-rail-foreground: oklch(0.27 0.052 267.5);
+  --lesson-rail-muted: oklch(0.506 0.022 83); /* #6b6457 */
+  --lesson-surface: oklch(1 0 0);
+  --lesson-heading: oklch(0.27 0.052 267.5); /* ink #1b2540 */
+  --lesson-ink: oklch(0.27 0.052 267.5); /* #1b2540 */
+  --lesson-body: oklch(0.438 0.03 265.3); /* #4a5263 */
+  --lesson-muted: oklch(0.506 0.022 83); /* #6b6457 */
+  --lesson-line: oklch(0.914 0.013 82.4); /* #e7e2d9 */
+  --lesson-line-strong: oklch(0.869 0.016 82.8); /* #d9d3c8 */
+  --lesson-primary: oklch(0.27 0.052 267.5); /* #1b2540 */
+  --lesson-primary-foreground: oklch(1 0 0);
+  --lesson-accent: oklch(0.611 0.099 72); /* bronze #a8793a */
+  --lesson-accent-foreground: oklch(1 0 0);
+  --lesson-eyebrow: oklch(0.532 0.084 72.8); /* #8a6430 */
+  --lesson-stop: oklch(0.553 0.174 38.4); /* #c2410c */
+  --lesson-stop-foreground: oklch(1 0 0);
+  --lesson-correct: oklch(0.473 0.088 164.8); /* #1d6b4f */
+  --lesson-wrong: oklch(0.553 0.174 38.4); /* #c2410c */
+  --lesson-player: oklch(0.197 0.021 267.5); /* #11151f */
+  --lesson-player-foreground: oklch(1 0 0);
 }
 
 /* Dark theme: deep navy surfaces, a light-blue primary, the same blue ring. */
@@ -180,6 +263,8 @@
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.872 0.031 258.9); /* navy-soft #C9D6EA */
   --primary-foreground: oklch(0.22 0.028 260);
+  --progress: oklch(0.872 0.031 258.9);
+  --link: oklch(0.872 0.031 258.9);
   --heading: oklch(0.985 0 0);
   --secondary: oklch(0.32 0.035 260);
   --secondary-foreground: oklch(0.985 0 0);
@@ -221,6 +306,43 @@
   --lily-middle: #93af9e;
   --lily-inner: #fddc47;
   --lily-line: oklch(0.25 0.03 260);
+}
+
+/* An organisation's house style always wins over the lesson palette
+   (ADR-0017): the player shell carries data-lesson-branded whenever a tenant
+   theme is active, and every lesson token then follows the platform token the
+   theme overrides on <body> — already checked by src/lib/brand-theme.ts
+   against the same floors. The dark theme does the same unconditionally, so
+   the lesson environment simply follows the platform's dark tokens. The
+   semantic colours (STOP, correct, wrong) and the player surface keep their
+   meaning in every theme. */
+.dark,
+[data-lesson-branded] {
+  --lesson-canvas: var(--background);
+  --lesson-rail: var(--sidebar);
+  --lesson-rail-foreground: var(--sidebar-foreground);
+  --lesson-rail-muted: color-mix(
+    in oklch,
+    var(--sidebar-foreground) 70%,
+    var(--sidebar)
+  );
+  --lesson-surface: var(--card);
+  --lesson-heading: var(--heading);
+  --lesson-ink: var(--foreground);
+  --lesson-body: var(--foreground);
+  --lesson-muted: var(--muted-foreground);
+  --lesson-line: var(--border);
+  --lesson-line-strong: var(--input);
+  --lesson-primary: var(--primary);
+  --lesson-primary-foreground: var(--primary-foreground);
+  --lesson-accent: var(--progress);
+  --lesson-accent-foreground: var(--card);
+  --lesson-eyebrow: var(--accent-brand-ink);
+}
+
+.dark {
+  --lesson-correct: var(--success-foreground);
+  --lesson-wrong: var(--destructive);
 }
 
 @layer base {
