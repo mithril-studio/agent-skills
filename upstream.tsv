@@ -5,7 +5,6 @@
 # Anything not listed here is ours and has no upstream. Add a row when you vendor
 # something; delete the row when you take ownership of it and stop tracking.
 
-engineering-skills/code-review-and-quality	https://github.com/addyosmani/agent-skills	skills/code-review-and-quality
 engineering-skills/git-workflow-and-versioning	https://github.com/addyosmani/agent-skills	skills/git-workflow-and-versioning
 engineering-skills/incremental-implementation	https://github.com/addyosmani/agent-skills	skills/incremental-implementation
 engineering-skills/performance-optimization	https://github.com/addyosmani/agent-skills	skills/performance-optimization
@@ -43,4 +42,3 @@ productivity-skills/writing-for-agents	https://github.com/mattpocock/skills	skil
 
 references/definition-of-done.md	https://github.com/addyosmani/agent-skills	references/definition-of-done.md
 references/performance-checklist.md	https://github.com/addyosmani/agent-skills	references/performance-checklist.md
-references/security-checklist.md	https://github.com/addyosmani/agent-skills	references/security-checklist.md
