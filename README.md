@@ -22,10 +22,6 @@ cd agent-skills
 ./install.sh --list               # show what is available
 ```
 
-`references/` installs alongside, one level above the skills directory
-(`~/.claude/references/`), because that is where the skills' `../../references/…` links
-resolve to once a skill sits in `~/.claude/skills/<name>/`.
-
 Onto a remote machine — a boxd VM, a server, a container:
 
 ```bash
@@ -67,9 +63,6 @@ How I want an agent to write, review, change, and ship code.
 
 | Skill | What it does |
 |---|---|
-| [`git-workflow-and-versioning`](./engineering-skills/git-workflow-and-versioning) | Commits, branches, conflicts, parallel worktrees, semantic version bumps, tags, changelogs. |
-| [`incremental-implementation`](./engineering-skills/incremental-implementation) | Land multi-file changes in verifiable steps instead of one large drop. |
-| [`performance-optimization`](./engineering-skills/performance-optimization) | Profile and fix performance across frontend, backend, queries and databases — measure before changing. |
 | [`ship-to-boxd`](./engineering-skills/ship-to-boxd) | Update the boxd VM that runs a repo's app: pull `origin/<branch>` into the checkout on the VM, rebuild, restart, verify health, report before/after commits. Defers to a repo's own deploy script when one exists. |
 | [`ship-ios`](./engineering-skills/ship-ios) | Release an iOS or macOS app in two gates: build a downloadable test version from `origin/test`, wait for the user to accept it, then PR `test` into `main` and watch the production pipeline. |
 | [`ask-matt`](./engineering-skills/ask-matt) | Ask which skill or flow fits your situation. |
@@ -115,32 +108,15 @@ How I want an agent to think with me: interviews, handoffs, explanations.
 | [`wait-what`](./productivity-skills/wait-what) | The last message did not land: stop and re-pitch it. |
 | [`writing-for-agents`](./productivity-skills/writing-for-agents) | How to write skills, AGENTS.md and CLAUDE.md for agents to read. |
 
-### [`references`](./references)
-
-Shared checklists several skills link to rather than restate. Not skills — no `SKILL.md`,
-never installed as one.
-
-| File | Linked from |
-|---|---|
-| [`definition-of-done.md`](./references/definition-of-done.md) | `incremental-implementation` |
-| [`performance-checklist.md`](./references/performance-checklist.md) | `performance-optimization` |
-
-Every link sits under a `## See Also` heading, which is the point: a skill's `SKILL.md`
-is loaded in full whenever that skill fires, so a long checklist stays out
-of it and is read only when the work actually needs it.
-
 ## Provenance
 
 Everything in `engineering-skills` and `productivity-skills` except `ship-to-boxd` and `ship-ios` is
-vendored from an MIT-licensed upstream, not written here.
+vendored from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT, © Matt Pocock), not written here.
 
 | Skill | Upstream |
 |---|---|
-| `git-workflow-and-versioning`, `incremental-implementation`, `performance-optimization` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
 | Every other skill in `engineering-skills` and `productivity-skills` | [mattpocock/skills](https://github.com/mattpocock/skills) — MIT, © Matt Pocock. `triage` and `handoff` are renamed `issue-triage` and `agent-handoff` here so they don't collide with personal commands of the same name. |
 | `ship-to-boxd`, `ship-ios`, `web-app-design` | Mine — no upstream |
-
-All of `references/` is from addyosmani/agent-skills too, same license.
 
 ### Staying honest about the fork
 

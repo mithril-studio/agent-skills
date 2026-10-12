@@ -5,10 +5,6 @@
 # Anything not listed here is ours and has no upstream. Add a row when you vendor
 # something; delete the row when you take ownership of it and stop tracking.
 
-engineering-skills/git-workflow-and-versioning	https://github.com/addyosmani/agent-skills	skills/git-workflow-and-versioning
-engineering-skills/incremental-implementation	https://github.com/addyosmani/agent-skills	skills/incremental-implementation
-engineering-skills/performance-optimization	https://github.com/addyosmani/agent-skills	skills/performance-optimization
-
 # mattpocock/skills, vendored 2026-10-12 at 49dd158. triage and handoff are renamed
 # to issue-triage and agent-handoff so they don't shadow the personal /triage and /handoff commands.
 
@@ -39,6 +35,3 @@ productivity-skills/teach	https://github.com/mattpocock/skills	skills/productivi
 productivity-skills/to-questionnaire	https://github.com/mattpocock/skills	skills/productivity/to-questionnaire
 productivity-skills/wait-what	https://github.com/mattpocock/skills	skills/productivity/wait-what
 productivity-skills/writing-for-agents	https://github.com/mattpocock/skills	skills/productivity/writing-for-agents
-
-references/definition-of-done.md	https://github.com/addyosmani/agent-skills	references/definition-of-done.md
-references/performance-checklist.md	https://github.com/addyosmani/agent-skills	references/performance-checklist.md
