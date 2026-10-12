@@ -7,8 +7,8 @@ A skill is a folder with a `SKILL.md`: frontmatter naming it and describing when
 then instructions in markdown. No code runs on your machine to install one — it is text an
 agent reads.
 
-Skills are grouped into category folders here (`engineering-skills/code-review-and-quality/`) but
-install flat, because that is the layout agents read (`~/.claude/skills/code-review-and-quality/`).
+Skills are grouped into category folders here (`engineering-skills/tdd/`) but
+install flat, because that is the layout agents read (`~/.claude/skills/tdd/`).
 
 ## Install
 
@@ -16,7 +16,7 @@ install flat, because that is the layout agents read (`~/.claude/skills/code-rev
 git clone https://github.com/mithril-studio/agent-skills
 cd agent-skills
 ./install.sh                      # everything -> ~/.claude/skills
-./install.sh code-review-and-quality  # just one
+./install.sh tdd                  # just one
 ./install.sh engineering-skills   # a whole category
 ./install.sh --dest /some/path    # somewhere else
 ./install.sh --list               # show what is available
@@ -67,7 +67,6 @@ How I want an agent to write, review, change, and ship code.
 
 | Skill | What it does |
 |---|---|
-| [`code-review-and-quality`](./engineering-skills/code-review-and-quality) | Multi-axis review of a change before it merges — whether a human, you, or another agent wrote it. |
 | [`git-workflow-and-versioning`](./engineering-skills/git-workflow-and-versioning) | Commits, branches, conflicts, parallel worktrees, semantic version bumps, tags, changelogs. |
 | [`incremental-implementation`](./engineering-skills/incremental-implementation) | Land multi-file changes in verifiable steps instead of one large drop. |
 | [`performance-optimization`](./engineering-skills/performance-optimization) | Profile and fix performance across frontend, backend, queries and databases — measure before changing. |
@@ -124,12 +123,11 @@ never installed as one.
 | File | Linked from |
 |---|---|
 | [`definition-of-done.md`](./references/definition-of-done.md) | `incremental-implementation` |
-| [`performance-checklist.md`](./references/performance-checklist.md) | `code-review-and-quality`, `performance-optimization` |
-| [`security-checklist.md`](./references/security-checklist.md) | `code-review-and-quality` |
+| [`performance-checklist.md`](./references/performance-checklist.md) | `performance-optimization` |
 
 Every link sits under a `## See Also` heading, which is the point: a skill's `SKILL.md`
-is loaded in full whenever that skill fires, so the 205-line security checklist stays out
-of it and is read only when a review actually goes deep on security.
+is loaded in full whenever that skill fires, so a long checklist stays out
+of it and is read only when the work actually needs it.
 
 ## Provenance
 
@@ -138,7 +136,7 @@ vendored from an MIT-licensed upstream, not written here.
 
 | Skill | Upstream |
 |---|---|
-| `code-review-and-quality`, `git-workflow-and-versioning`, `incremental-implementation`, `performance-optimization` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
+| `git-workflow-and-versioning`, `incremental-implementation`, `performance-optimization` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — MIT, © Addy Osmani |
 | Every other skill in `engineering-skills` and `productivity-skills` | [mattpocock/skills](https://github.com/mattpocock/skills) — MIT, © Matt Pocock. `triage` and `handoff` are renamed `issue-triage` and `agent-handoff` here so they don't collide with personal commands of the same name. |
 | `ship-to-boxd`, `ship-ios`, `web-app-design` | Mine — no upstream |
 
@@ -153,7 +151,7 @@ A vendored copy is a fork, and a fork nobody checks goes stale invisibly.
 ```bash
 ./upstream-diff.sh                      # summary: same / DRIFT / GONE
 ./upstream-diff.sh --diff               # what actually changed
-./upstream-diff.sh code-review-and-quality  # one entry
+./upstream-diff.sh tdd                  # one entry
 ./upstream-diff.sh --refresh            # re-fetch upstream first
 ./upstream-diff.sh --check              # exit 1 on any drift, for CI
 ```

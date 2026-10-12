@@ -2,13 +2,13 @@
 # Install skills into an agent's skills directory.
 #
 #   ./install.sh                       every skill -> ~/.claude/skills
-#   ./install.sh code-review-and-quality  just one
+#   ./install.sh tdd                   just one
 #   ./install.sh engineering-skills    a whole category
 #   ./install.sh --dest /path          somewhere else
 #   ./install.sh --list                show what is available
 #
-# Skills live in category folders (engineering-skills/code-review-and-quality/SKILL.md) but
-# install flat, because that is the layout agents read: ~/.claude/skills/code-review-and-quality.
+# Skills live in category folders (engineering-skills/tdd/SKILL.md) but
+# install flat, because that is the layout agents read: ~/.claude/skills/tdd.
 #
 # Idempotent: re-running overwrites, so it doubles as an update. A full install also
 # removes skills this installer put there earlier that have since left the repo, so a
