@@ -10,6 +10,37 @@ engineering-skills/git-workflow-and-versioning	https://github.com/addyosmani/age
 engineering-skills/incremental-implementation	https://github.com/addyosmani/agent-skills	skills/incremental-implementation
 engineering-skills/performance-optimization	https://github.com/addyosmani/agent-skills	skills/performance-optimization
 
+# mattpocock/skills, vendored 2026-10-12 at 49dd158. triage and handoff are renamed
+# to issue-triage and agent-handoff so they don't shadow the personal /triage and /handoff commands.
+
+engineering-skills/ask-matt	https://github.com/mattpocock/skills	skills/engineering/ask-matt
+engineering-skills/diagnosing-bugs	https://github.com/mattpocock/skills	skills/engineering/diagnosing-bugs
+engineering-skills/grill-with-docs	https://github.com/mattpocock/skills	skills/engineering/grill-with-docs
+engineering-skills/issue-triage	https://github.com/mattpocock/skills	skills/engineering/triage
+engineering-skills/improve-codebase-architecture	https://github.com/mattpocock/skills	skills/engineering/improve-codebase-architecture
+engineering-skills/setup-matt-pocock-skills	https://github.com/mattpocock/skills	skills/engineering/setup-matt-pocock-skills
+engineering-skills/tdd	https://github.com/mattpocock/skills	skills/engineering/tdd
+engineering-skills/to-spec	https://github.com/mattpocock/skills	skills/engineering/to-spec
+engineering-skills/to-tickets	https://github.com/mattpocock/skills	skills/engineering/to-tickets
+engineering-skills/wayfinder	https://github.com/mattpocock/skills	skills/engineering/wayfinder
+engineering-skills/implement	https://github.com/mattpocock/skills	skills/engineering/implement
+engineering-skills/implement-spec	https://github.com/mattpocock/skills	skills/engineering/implement-spec
+engineering-skills/prototype	https://github.com/mattpocock/skills	skills/engineering/prototype
+engineering-skills/research	https://github.com/mattpocock/skills	skills/engineering/research
+engineering-skills/domain-modeling	https://github.com/mattpocock/skills	skills/engineering/domain-modeling
+engineering-skills/codebase-design	https://github.com/mattpocock/skills	skills/engineering/codebase-design
+engineering-skills/code-review	https://github.com/mattpocock/skills	skills/engineering/code-review
+engineering-skills/pr	https://github.com/mattpocock/skills	skills/engineering/pr
+engineering-skills/retro	https://github.com/mattpocock/skills	skills/engineering/retro
+engineering-skills/wizard	https://github.com/mattpocock/skills	skills/engineering/wizard
+productivity-skills/grill-me	https://github.com/mattpocock/skills	skills/productivity/grill-me
+productivity-skills/grilling	https://github.com/mattpocock/skills	skills/productivity/grilling
+productivity-skills/agent-handoff	https://github.com/mattpocock/skills	skills/productivity/handoff
+productivity-skills/teach	https://github.com/mattpocock/skills	skills/productivity/teach
+productivity-skills/to-questionnaire	https://github.com/mattpocock/skills	skills/productivity/to-questionnaire
+productivity-skills/wait-what	https://github.com/mattpocock/skills	skills/productivity/wait-what
+productivity-skills/writing-for-agents	https://github.com/mattpocock/skills	skills/productivity/writing-for-agents
+
 references/definition-of-done.md	https://github.com/addyosmani/agent-skills	references/definition-of-done.md
 references/performance-checklist.md	https://github.com/addyosmani/agent-skills	references/performance-checklist.md
 references/security-checklist.md	https://github.com/addyosmani/agent-skills	references/security-checklist.md
