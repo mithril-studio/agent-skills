@@ -174,3 +174,9 @@ Instructions...
 
 Keep skills passive: they tell the agent what to do, they don't contain a model and they
 don't make decisions of their own. The caller has the intelligence.
+
+## Routines
+
+`routines/` holds the prompts and state of Conductor routines that are not skills. The
+installer ignores it (no `SKILL.md`). `routines/daily-development-audit/` has the audit
+routine's prompt and its standing experiment ledger, which each run reads and rewrites.
