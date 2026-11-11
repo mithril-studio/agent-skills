@@ -93,6 +93,7 @@ How I want an app to look.
 | Skill | What it does |
 |---|---|
 | [`web-app-design`](./design-skills/web-app-design) | The house style for every web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app: tokens, type, the sidebar + top bar + page-header shell, where every divider line sits, where back links and actions go, and the component presets. Ships a copy-paste `tokens.css`. |
+| [`design-judge`](./design-skills/design-judge) | A second opinion on a screen, in rounds. Sets up [design-agent-harness](https://github.com/mithril-studio/design-agent-harness) on the machine, takes screenshots, then follows its `LOOP.md`: a separate model keeps a change only if it beats the best version so far and lists up to three fixes, for at most four rounds. Also compares two screenshots once. |
 
 ### [`productivity-skills`](./productivity-skills)
 
@@ -116,7 +117,7 @@ vendored from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT, ©
 | Skill | Upstream |
 |---|---|
 | Every other skill in `engineering-skills` and `productivity-skills` | [mattpocock/skills](https://github.com/mattpocock/skills) — MIT, © Matt Pocock. `triage` and `handoff` are renamed `issue-triage` and `agent-handoff` here so they don't collide with personal commands of the same name. |
-| `ship-to-boxd`, `ship-ios`, `web-app-design` | Mine — no upstream |
+| `ship-to-boxd`, `ship-ios`, `web-app-design`, `design-judge` | Mine — no upstream |
 
 ### Staying honest about the fork
 
