@@ -55,90 +55,48 @@ here deletes it from the agent on the next install. It tracks what it installed 
 Skills committed to a repository's `.claude/skills/` are project-scoped and not needed
 when the global install is in place.
 
+### Every agent, one source
+
+Each agent reads its own skills folder. Install into all of them so every session gets
+the same set:
+
+| Where | Reads | Install |
+|---|---|---|
+| Claude Code CLI, Conductor (local), T3, Powerhouse on this Mac | `~/.claude/skills` | `./install.sh` |
+| Codex | `~/.codex/skills` | `./install.sh --dest ~/.codex/skills` |
+| Amp, Cline and other `npx skills` agents | `~/.agents/skills` | `./install.sh --dest ~/.agents/skills` |
+| Conductor cloud, boxd VMs, Caveman machines | `~/.claude/skills` on that machine | the clone one-liner above, in the image or setup script |
+
+Never edit an installed copy. Change the skill here, merge, and re-run the installer.
+
 ## Skills
-
-### [`engineering-skills`](./engineering-skills)
-
-How I want an agent to write, review, change, and ship code.
-
-| Skill | What it does |
-|---|---|
-| [`ship-to-boxd`](./engineering-skills/ship-to-boxd) | Update the boxd VM that runs a repo's app: pull `origin/<branch>` into the checkout on the VM, rebuild, restart, verify health, report before/after commits. Defers to a repo's own deploy script when one exists. |
-| [`ship-ios`](./engineering-skills/ship-ios) | Release an iOS or macOS app in two gates: build a downloadable test version from `origin/test`, wait for the user to accept it, then PR `test` into `main` and watch the production pipeline. |
-| [`ask-matt`](./engineering-skills/ask-matt) | Ask which skill or flow fits your situation. |
-| [`code-review`](./engineering-skills/code-review) | Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes. |
-| [`codebase-design`](./engineering-skills/codebase-design) | Shared vocabulary for designing deep modules. |
-| [`diagnosing-bugs`](./engineering-skills/diagnosing-bugs) | Diagnosis loop for hard bugs and performance regressions. |
-| [`domain-modeling`](./engineering-skills/domain-modeling) | Build and sharpen a project's domain model. |
-| [`grill-with-docs`](./engineering-skills/grill-with-docs) | A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glossary) as we go. |
-| [`implement-spec`](./engineering-skills/implement-spec) | Implement the result of /to-spec and /to-tickets in code. |
-| [`implement`](./engineering-skills/implement) | Implement a piece of work based on a spec or set of tickets. |
-| [`improve-codebase-architecture`](./engineering-skills/improve-codebase-architecture) | Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick. |
-| [`issue-triage`](./engineering-skills/issue-triage) | Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs. |
-| [`pr`](./engineering-skills/pr) | Use when writing a PR body. |
-| [`prototype`](./engineering-skills/prototype) | Build a throwaway prototype to answer a design question. |
-| [`research`](./engineering-skills/research) | Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. |
-| [`retro`](./engineering-skills/retro) | Conduct a retrospective on a coding session. |
-| [`setup-matt-pocock-skills`](./engineering-skills/setup-matt-pocock-skills) | Configure this repo for the engineering skills. |
-| [`tdd`](./engineering-skills/tdd) | Test-driven development. |
-| [`to-spec`](./engineering-skills/to-spec) | Turn the current conversation into a spec and publish it to the project issue tracker. |
-| [`to-tickets`](./engineering-skills/to-tickets) | Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker (edges as text in one file per ticket locally, or native blocking links on a real tracker). |
-| [`wayfinder`](./engineering-skills/wayfinder) | Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on your issue tracker, and resolve them one at a time until the way to the destination is clear. |
-| [`wizard`](./engineering-skills/wizard) | Generate an interactive bash wizard that walks a human through steps only they can perform. |
 
 ### [`design-skills`](./design-skills)
 
-How I want an app to look.
+How I want an app to look. `design` sets the style, `design-judge` checks the result.
 
 | Skill | What it does |
 |---|---|
-| [`web-app-design`](./design-skills/web-app-design) | The house style for every web app — the "Legal Control" look extracted from the e-learning platform and the Legal AI app: tokens, type, the sidebar + top bar + page-header shell, where every divider line sits, where back links and actions go, and the component presets. Ships a copy-paste `tokens.css`. |
-| [`design-judge`](./design-skills/design-judge) | A second opinion on a screen, in rounds. Sets up [design-agent-harness](https://github.com/mithril-studio/design-agent-harness) on the machine, takes screenshots, then follows its `LOOP.md`: a separate model keeps a change only if it beats the best version so far and lists up to three fixes, for at most four rounds. Also compares two screenshots once. |
+| [`design`](./design-skills/design) | The design system for every app and site: two themes (Editorial, Industrial) across websites, web apps, iOS and macOS. Reads recipes, tokens, templates and reference screenshots from the private [app-designs](https://github.com/mithril-studio/app-designs) repo, which it clones on first use. |
+| [`design-judge`](./design-skills/design-judge) | A second opinion on a screen, in rounds. Sets up [design-agent-harness](https://github.com/mithril-studio/design-agent-harness) on the machine, takes screenshots, then follows its `LOOP.md`: a separate model keeps a change only if it beats the best version so far and compares it with reference screens you admire, for at most four rounds. |
 
-### [`productivity-skills`](./productivity-skills)
+### [`engineering-skills`](./engineering-skills)
 
-How I want an agent to think with me: interviews, handoffs, explanations.
+How an agent works inside a repo.
 
 | Skill | What it does |
 |---|---|
-| [`agent-handoff`](./productivity-skills/agent-handoff) | Compact the current conversation into a handoff document for another agent to pick up. |
-| [`grill-me`](./productivity-skills/grill-me) | A relentless interview to sharpen a plan or design. |
-| [`grilling`](./productivity-skills/grilling) | The interview primitive behind `grill-me`, `grill-with-docs` and others: grill the user relentlessly about a plan, decision, or idea. |
-| [`teach`](./productivity-skills/teach) | Teach the user a new skill or concept, within this workspace. |
-| [`to-questionnaire`](./productivity-skills/to-questionnaire) | Turn a decision you can't fully answer into a questionnaire for someone else to fill in. |
-| [`wait-what`](./productivity-skills/wait-what) | The last message did not land: stop and re-pitch it. |
-| [`writing-for-agents`](./productivity-skills/writing-for-agents) | How to write skills, AGENTS.md and CLAUDE.md for agents to read. |
+| [`memory`](./engineering-skills/memory) | Read a repo's `.mem/` learnings at session start and record new ones before finishing. |
+| [`caveman-explore`](./engineering-skills/caveman-explore) | Read-only explorer that returns only `path:line` citations, so broad searches stay out of the main context. |
 
 ## Provenance
 
-Everything in `engineering-skills` and `productivity-skills` except `ship-to-boxd` and `ship-ios` is
-vendored from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT, © Matt Pocock), not written here.
-
-| Skill | Upstream |
+| Skill | Source |
 |---|---|
-| Every other skill in `engineering-skills` and `productivity-skills` | [mattpocock/skills](https://github.com/mattpocock/skills) — MIT, © Matt Pocock. `triage` and `handoff` are renamed `issue-triage` and `agent-handoff` here so they don't collide with personal commands of the same name. |
-| `ship-to-boxd`, `ship-ios`, `web-app-design`, `design-judge` | Mine — no upstream |
+| `design`, `design-judge`, `memory` | Mine |
+| `caveman-explore` | `@caveman/skill-caveman-explore` (MIT) |
 
-### Staying honest about the fork
-
-A vendored copy is a fork, and a fork nobody checks goes stale invisibly.
-[`upstream.tsv`](./upstream.tsv) records where every vendored path came from, and
-`upstream-diff.sh` compares them against the live upstreams:
-
-```bash
-./upstream-diff.sh                      # summary: same / DRIFT / GONE
-./upstream-diff.sh --diff               # what actually changed
-./upstream-diff.sh tdd                  # one entry
-./upstream-diff.sh --refresh            # re-fetch upstream first
-./upstream-diff.sh --check              # exit 1 on any drift, for CI
-```
-
-Drift is not a failure. Editing a vendored skill on purpose is fine — the script exists so
-that choice stays visible instead of turning into a surprise later. Upstreams are cached in
-`.upstream-cache/` (gitignored); `--refresh` updates them.
-
-When you take ownership of a vendored skill for good, delete its row from `upstream.tsv`
-and list it in the Provenance table as yours.
+The boxd skills (`boxd-cli`, `boxd-setup-*`) ship from boxd and stay out of this repo; see below.
 
 ## What belongs here
 
